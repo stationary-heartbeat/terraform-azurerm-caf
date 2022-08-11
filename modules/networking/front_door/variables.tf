@@ -15,6 +15,9 @@ variable "global_settings" {
 variable "keyvault_id" {
   default = null
 }
+variable "keyvaults" {
+  default = null
+}
 variable "keyvault_certificate_requests" {
   default = {}
 }
@@ -23,4 +26,3 @@ variable "settings" {}
 variable "tags" {
   default = {}
 }
-
