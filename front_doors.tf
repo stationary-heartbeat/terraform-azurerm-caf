@@ -8,6 +8,7 @@ module "front_doors" {
   client_config                 = local.client_config
   diagnostics                   = local.combined_diagnostics
   front_door_waf_policies       = local.combined_objects_front_door_waf_policies
+  keyvaults                     = local.combined_objects_keyvaults
   global_settings               = local.global_settings
   keyvault_id                   = try(each.value.keyvault_key, null) == null ? null : try(local.combined_objects_keyvaults[local.client_config.landingzone_key][each.value.keyvault_key].id, local.combined_objects_keyvaults[each.value.lz_key][each.value.keyvault_key].id)
   keyvault_certificate_requests = local.combined_objects_keyvault_certificate_requests
