@@ -164,7 +164,7 @@ resource "azurerm_application_gateway" "agw" {
     protocol                       = var.settings.front_end_ports[var.settings.default.frontend_port_key].protocol
     host_names                     = try(var.settings.default.host_name, null) == null ? try(var.settings.default.host_names, null) : null
     require_sni                    = try(var.settings.default.require_sni, false)
-    #ssl_certificate_name           = lower(var.settings.front_end_ports[var.settings.default.frontend_port_key].protocol) == "https" ? var.settings.ssl_certs[var.settings.default.ssl_cert_key].name : null
+    ssl_certificate_name           = lower(var.settings.front_end_ports[var.settings.default.frontend_port_key].protocol) == "https" ? var.settings.ssl_certs[var.settings.default.ssl_cert_key].name : null
     firewall_policy_id             = try(var.application_gateway_waf_policies[try(var.settings.waf_policy.lz_key, var.client_config.landingzone_key)][var.settings.waf_policy.key].id, null)
   }
 
