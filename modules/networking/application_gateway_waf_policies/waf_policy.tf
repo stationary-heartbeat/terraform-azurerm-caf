@@ -1,9 +1,9 @@
 resource "azurerm_web_application_firewall_policy" "wafpolicy" {
 
   name                = var.settings.name
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  tags                = local.tags
+  resource_group_name = local.resource_group_name
+  location            = local.location
+  tags                = merge(local.tags, try(var.settings.tags, {}))
 
   dynamic "custom_rules" {
     for_each = try(var.settings.custom_rules, {})
@@ -53,8 +53,26 @@ resource "azurerm_web_application_firewall_policy" "wafpolicy" {
           match_variable          = exclusion.value.match_variable
           selector                = try(exclusion.value.selector, null)
           selector_match_operator = exclusion.value.selector_match_operator
+
+          dynamic "excluded_rule_set" {
+            for_each = try(exclusion.value.excluded_rule_set, {}) != {} ? [1] : []
+            content {
+              type    = try(exclusion.value.excluded_rule_set.type, "OWASP")
+              version = try(exclusion.value.excluded_rule_set.version, "3.2")
+
+              dynamic "rule_group" {
+                for_each = try(exclusion.value.excluded_rule_set.rule_groups, {})
+                content {
+                  rule_group_name = rule_group.value.rule_group_name
+                  excluded_rules  = try(rule_group.value.excluded_rules, [])
+                }
+              }
+            }
+          }
         }
       }
+
+
       dynamic "managed_rule_set" {
         for_each = var.settings.managed_rules.managed_rule_set
         content {
