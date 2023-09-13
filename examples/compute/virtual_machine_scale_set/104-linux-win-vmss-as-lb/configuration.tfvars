@@ -3,6 +3,13 @@ global_settings = {
   regions = {
     region1 = "australiaeast"
   }
+  resource_defaults = {
+    virtual_machine_scale_sets = {
+      # set the below to enable az managed boot diagostics for vms
+      # this will be override if a user managed storage account is defined for the vm
+      # use_azmanaged_storage_for_boot_diagnostics = true
+    }
+  }
 }
 
 resource_groups = {
@@ -102,7 +109,7 @@ public_ip_addresses = {
 load_balancers = {
   lb1 = {
     name                      = "lb-vmss"
-    sku                       = "basic"
+    sku                       = "Basic"
     resource_group_key        = "rg1"
     backend_address_pool_name = "vmss1"
     frontend_ip_configurations = {
@@ -114,7 +121,7 @@ load_balancers = {
   }
   lb2 = {
     name                      = "lb-vmss2"
-    sku                       = "basic"
+    sku                       = "Basic"
     resource_group_key        = "rg1"
     backend_address_pool_name = "vmss1"
     frontend_ip_configurations = {
@@ -129,7 +136,10 @@ load_balancers = {
 
 virtual_machine_scale_sets = {
   vmss1 = {
-    resource_group_key                   = "rg1"
+    resource_group_key = "rg1"
+    # when boot_diagnostics_storage_account_key is empty string "", boot diagnostics will be put on azure managed storage
+    # when boot_diagnostics_storage_account_key is a non-empty string, it needs to point to the key of a user managed storage defined in diagnostic_storage_accounts
+    # if boot_diagnostics_storage_account_key is not defined, but global_settings.resource_defaults.virtual_machine_scale_sets.use_azmanaged_storage_for_boot_diagnostics is true, boot diagnostics will be put on azure managed storage
     boot_diagnostics_storage_account_key = "bootdiag1"
     os_type                              = "linux"
     keyvault_key                         = "kv1"

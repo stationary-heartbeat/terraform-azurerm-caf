@@ -10,11 +10,33 @@ resource "azurerm_virtual_machine_extension" "custom_script" {
   settings = jsonencode(
     {
       fileUris  = local.fileuris,
-      timestamp = try(toint(var.extension.timestamp), 12345678)
+      timestamp = try(tonumber(var.extension.timestamp), 1234568)
     }
   )
 
   protected_settings = jsonencode(local.protected_settings)
+
+  dynamic "timeouts" {
+    for_each = try(var.extension.timeouts, null) != null ? [var.extension.timeouts] : []
+    content {
+      create = try(timeouts.value.create, null)
+      read   = try(timeouts.value.read, null)
+      update = try(timeouts.value.update, null)
+      delete = try(timeouts.value.delete, null)
+    }
+  }
+
+  lifecycle {
+    precondition {
+      condition = anytrue(
+        [
+          for status in jsondecode(data.azapi_resource_action.azurerm_virtual_machine_status.output).statuses : "true"
+          if status.code == "PowerState/running"
+        ]
+      )
+      error_message = format("The virtual machine (%s) must be in running state to be able to deploy or modify the vm extension.", var.virtual_machine_id)
+    }
+  }
 }
 
 locals {
@@ -47,10 +69,9 @@ locals {
   protected_settings = merge(local.map_command, local.system_assigned_id, local.user_assigned_id)
 
   # fileuris
-  fileuri_sa_key  = try(var.extension.fileuri_sa_key, "")
-  fileuri_sa_path = try(var.extension.fileuri_sa_path, "")
-  fileuri_sa = local.fileuri_sa_key != "" ? try(var.storage_accounts[var.client_config.landingzone_key][var.extension.fileuri_sa_key].primary_blob_endpoint,
-  var.storage_accounts[var.extension.lz_key][var.extension.fileuri_sa_key].primary_blob_endpoint) : ""
+  fileuri_sa_key       = try(var.extension.fileuri_sa_key, "")
+  fileuri_sa_path      = try(var.extension.fileuri_sa_path, "")
+  fileuri_sa           = local.fileuri_sa_key != "" ? try(var.storage_accounts[var.extension.lz_key][var.extension.fileuri_sa_key].primary_blob_endpoint, var.storage_accounts[var.client_config.landingzone_key][var.extension.fileuri_sa_key].primary_blob_endpoint) : ""
   fileuri_sa_full_path = "${local.fileuri_sa}${local.fileuri_sa_path}"
   fileuri_sa_defined   = try(var.extension.fileuris, "")
   fileuris             = local.fileuri_sa_defined == "" ? [local.fileuri_sa_full_path] : var.extension.fileuris

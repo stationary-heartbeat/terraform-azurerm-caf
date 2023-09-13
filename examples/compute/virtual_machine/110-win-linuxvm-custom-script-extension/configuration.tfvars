@@ -50,14 +50,14 @@ storage_account_blobs = {
     name                   = "helloworld.sh"
     storage_account_key    = "sa1"
     storage_container_name = "files"
-    source                 = "./compute/virtual_machine/110-win-linuxvm-custom-script-extension/scripts/helloworld.sh"
+    source                 = "scripts/helloworld.sh"
     parallelism            = 1
   }
   script2 = {
     name                   = "helloworld.ps1"
     storage_account_key    = "sa1"
     storage_container_name = "files"
-    source                 = "./compute/virtual_machine/110-win-linuxvm-custom-script-extension/scripts/helloworld.ps1"
+    source                 = "scripts/helloworld.ps1"
     parallelism            = 1
   }
 }
@@ -235,8 +235,15 @@ virtual_machines = {
         identity_type             = "UserAssigned" # optional to use managed_identity for download from location specified in fileuri, UserAssigned or SystemAssigned.
         managed_identity_key      = "user_mi"
         automatic_upgrade_enabled = false
+        # timestamp                 = 123456789
         # managed_identity_id       = "id" # optional to define managed identity principal_id directly
         # lz_key                    = "other_lz" # optional for managed identity defined in other lz
+        timeouts = {
+          create = "35m"
+          read   = "10m"
+          update = "35m"
+          delete = "35m"
+        }
       }
     }
   }

@@ -30,8 +30,8 @@ resource "azurerm_virtual_machine" "vm" {
   for_each = local.os_type == "legacy" ? var.settings.virtual_machine_settings : {}
 
   name                             = each.value.name
-  location                         = var.location
-  resource_group_name              = var.resource_group_name
+  location                         = local.location
+  resource_group_name              = local.resource_group_name
   vm_size                          = each.value.size
   network_interface_ids            = local.nic_ids
   zones                            = try([each.value.zones], null)
@@ -147,7 +147,7 @@ resource "azurerm_virtual_machine" "vm" {
     name                      = try(each.value.os_disk.name, null)
     write_accelerator_enabled = try(each.value.os_disk.write_accelerator_enabled, false)
     create_option             = each.value.os_disk.create_option
-    image_uri                 = try("${each.value.storage_image_reference.publisher}:${each.value.storage_image_reference.offer}:${each.value.storage_image_reference.sku}:${each.value.storage_image_reference.version}", null)
+    image_uri                 = try(each.value.image_uri, null)
     os_type                   = try(each.value.os_disk.operating_system, null)
     managed_disk_id           = try(each.value.os_disk.managed_disk_id, null)
     managed_disk_type         = try(each.value.os_disk.managed_disk_type, null)
@@ -219,7 +219,7 @@ resource "random_password" "legacy" {
   min_upper        = 2
   min_lower        = 2
   min_special      = 2
-  number           = true
+  numeric          = true
   special          = true
   override_special = "!@#$%&"
 }

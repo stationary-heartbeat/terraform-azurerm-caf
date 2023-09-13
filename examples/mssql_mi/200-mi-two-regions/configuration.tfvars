@@ -29,7 +29,7 @@ vnets = {
   sqlmi_region1 = {
     resource_group_key = "networking_region1"
     vnet = {
-      name          = "sqlmi-re1"
+      name          = "sqlmi-rg1"
       address_space = ["172.25.88.0/21"]
     }
     subnets = {
@@ -87,7 +87,7 @@ route_tables = {
   }
 }
 
-vnet_peerings = {
+vnet_peerings_v1 = {
 
   # Establish a peering with the devops vnet
   mi_region1-TO-mi_region2 = {
@@ -128,18 +128,20 @@ mssql_managed_instances = {
     sku = {
       name = "GP_Gen5"
     }
-    administratorLogin         = "adminuser"
-    administratorLoginPassword = "@dm1nu53r@30102020"
+    administratorLogin = "adminuser"
+    # administratorLoginPassword = "@dm1nu53r@30102020"
+    # if password not set, a random complex passwor will be created and stored in the keyvault
+    # the secret value can be changed after the deployment if needed
 
     //networking
     networking = {
       vnet_key   = "sqlmi_region1"
       subnet_key = "sqlmi1"
     }
+    keyvault_key = "sqlmi_rg1"
 
     storageSizeInGB = 32
-    vCores          = 8
-
+    vCores          = 4
   }
 }
 
@@ -150,8 +152,8 @@ mssql_managed_instances_secondary = {
     sku = {
       name = "GP_Gen5"
     }
-    administratorLogin         = "adminuser"
-    administratorLoginPassword = "@dm1nu53r@11112020"
+    administratorLogin = "adminuser"
+    # administratorLoginPassword = "@dm1nu53r@11112020"
 
     primary_server = {
       mi_server_key = "sqlmi1"
@@ -165,7 +167,7 @@ mssql_managed_instances_secondary = {
     keyvault_key = "sqlmi_rg1"
 
     storageSizeInGB = 32
-    vCores          = 8
+    vCores          = 4
   }
 }
 
@@ -275,9 +277,10 @@ mssql_mi_administrators = {
     resource_group_key = "sqlmi_region1"
     mi_server_key      = "sqlmi1"
     login              = "sqlmiadmin-khairi"
-    azuread_group_key  = "sql_mi_admins"
 
-    # group key or upn supported
+    # group key or existing group OID or upn supported
+    azuread_group_key = "sql_mi_admins"
+    # azuread_group_id   = "<specify existing azuread group's Object Id (OID) here>"
     # user_principal_name = ""
   }
 }
@@ -323,21 +326,21 @@ keyvaults = {
 #   tde_primary = {
 #     sqlmi1 = {
 #       mssql_managed_instance_key = "sqlmi1"
-#       key_permissions            = ["get", "unwrapKey", "wrapKey"]
+#       key_permissions            = ["get", "UnwrapKey", "WrapKey"]
 #     }
 #     sqlmi2 = {
 #       mssql_managed_instance_secondary_key = "sqlmi2"
-#       key_permissions                      = ["get", "unwrapKey", "wrapKey"]
+#       key_permissions                      = ["get", "UnwrapKey", "WrapKey"]
 #     }
 #   }
 #   tde_secondary = {
 #     sqlmi1 = {
 #       mssql_managed_instance_key = "sqlmi1"
-#       key_permissions            = ["get", "unwrapKey", "wrapKey"]
+#       key_permissions            = ["get", "UnwrapKey", "WrapKey"]
 #     }
 #     sqlmi2 = {
 #       mssql_managed_instance_secondary_key = "sqlmi2"
-#       key_permissions                      = ["get", "unwrapKey", "wrapKey"]
+#       key_permissions                      = ["get", "UnwrapKey", "WrapKey"]
 #     }
 #   }
 # }
@@ -347,7 +350,7 @@ keyvaults = {
 #     keyvault_key = "tde_primary"
 #     name         = "TDE"
 #     key_type     = "RSA"
-#     key_opts     = ["encrypt", "decrypt", "sign", "verify", "wrapKey", "unwrapKey"]
+#     key_opts     = ["Encrypt", "Decrypt", "Sign", "Verify", "WrapKey", "UnwrapKey"]
 #     key_size     = 2048
 #   }
 # }

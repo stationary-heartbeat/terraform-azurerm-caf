@@ -3,6 +3,13 @@ global_settings = {
   regions = {
     region1 = "australiaeast"
   }
+  resource_defaults = {
+    virtual_machine_scale_sets = {
+      # set the below to enable az managed boot diagostics for vms
+      # this will be override if a user managed storage account is defined for the vm
+      # use_azmanaged_storage_for_boot_diagnostics = true
+    }
+  }
 }
 
 tags = {
@@ -47,14 +54,14 @@ storage_account_blobs = {
     name                   = "helloworld.sh"
     storage_account_key    = "sa1"
     storage_container_name = "files"
-    source                 = "./compute/virtual_machine_scale_set/102-linux-win-vmss-custom-script-extension/scripts/helloworld.sh"
+    source                 = "scripts/helloworld.sh"
     parallelism            = 1
   }
   script2 = {
     name                   = "helloworld.ps1"
     storage_account_key    = "sa1"
     storage_container_name = "files"
-    source                 = "./compute/virtual_machine_scale_set/102-linux-win-vmss-custom-script-extension/scripts/helloworld.ps1"
+    source                 = "scripts/helloworld.ps1"
     parallelism            = 1
   }
 }
@@ -174,7 +181,7 @@ public_ip_addresses = {
 load_balancers = {
   lb1 = {
     name                      = "lb-vmss1"
-    sku                       = "basic"
+    sku                       = "Basic"
     resource_group_key        = "example_vmss_rg1"
     backend_address_pool_name = "vmss1"
     frontend_ip_configurations = {
@@ -198,7 +205,7 @@ load_balancers = {
         resource_group_key             = "example_vmss_rg1"
         load_balancer_key              = "lb1"
         lb_rule_name                   = "rule1"
-        protocol                       = "tcp"
+        protocol                       = "Tcp"
         probe_id_key                   = "probe1"
         frontend_port                  = "22"
         backend_port                   = "22"
@@ -213,7 +220,7 @@ load_balancers = {
   }
   lb2 = {
     name                      = "lb-vmss2"
-    sku                       = "basic"
+    sku                       = "Basic"
     resource_group_key        = "example_vmss_rg1"
     backend_address_pool_name = "vmss2"
     frontend_ip_configurations = {
@@ -237,7 +244,7 @@ load_balancers = {
         resource_group_key             = "example_vmss_rg1"
         load_balancer_key              = "lb2"
         lb_rule_name                   = "rule1"
-        protocol                       = "tcp"
+        protocol                       = "Tcp"
         probe_id_key                   = "probe1"
         frontend_port                  = "3389"
         backend_port                   = "3389"
@@ -254,7 +261,10 @@ load_balancers = {
 
 virtual_machine_scale_sets = {
   vmss1 = {
-    resource_group_key                   = "example_vmss_rg1"
+    resource_group_key = "example_vmss_rg1"
+    # when boot_diagnostics_storage_account_key is empty string "", boot diagnostics will be put on azure managed storage
+    # when boot_diagnostics_storage_account_key is a non-empty string, it needs to point to the key of a user managed storage defined in diagnostic_storage_accounts
+    # if boot_diagnostics_storage_account_key is not defined, but global_settings.resource_defaults.virtual_machine_scale_sets.use_azmanaged_storage_for_boot_diagnostics is true, boot diagnostics will be put on azure managed storage
     boot_diagnostics_storage_account_key = "bootdiag1"
     os_type                              = "linux"
     keyvault_key                         = "example_vmss_kv1"

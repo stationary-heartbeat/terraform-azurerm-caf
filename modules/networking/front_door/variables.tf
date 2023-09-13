@@ -21,7 +21,11 @@ variable "keyvaults" {
 variable "keyvault_certificate_requests" {
   default = {}
 }
+variable "keyvaults" {
+  default = {}
+}
 variable "resource_group_name" {}
+variable "location" {}
 variable "settings" {}
 variable "tags" {
   default = {}

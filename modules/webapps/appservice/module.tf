@@ -14,10 +14,10 @@ resource "azurecaf_name" "app_service" {
 
 resource "azurerm_app_service" "app_service" {
   name                = azurecaf_name.app_service.result
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  location            = local.location
+  resource_group_name = local.resource_group_name
   app_service_plan_id = var.app_service_plan_id
-  tags                = local.tags
+  tags                = merge(local.tags, try(var.settings.tags, {}))
 
   client_affinity_enabled = lookup(var.settings, "client_affinity_enabled", null)
   client_cert_enabled     = lookup(var.settings, "client_cert_enabled", null)
@@ -33,16 +33,18 @@ resource "azurerm_app_service" "app_service" {
     }
   }
 
+  key_vault_reference_identity_id = can(var.settings.key_vault_reference_identity.key) ? var.combined_objects.managed_identities[try(var.settings.identity.lz_key, var.client_config.landingzone_key)][var.settings.key_vault_reference_identity.key].id : try(var.settings.key_vault_reference_identity.id, null)
+
   dynamic "site_config" {
     for_each = lookup(var.settings, "site_config", {}) != {} ? [1] : []
 
     content {
-      # numberOfWorkers           = lookup(each.value.site_config, "numberOfWorkers", 1)  # defined in ARM template below
       always_on                 = lookup(var.settings.site_config, "always_on", false)
       app_command_line          = lookup(var.settings.site_config, "app_command_line", null)
       default_documents         = lookup(var.settings.site_config, "default_documents", null)
       dotnet_framework_version  = lookup(var.settings.site_config, "dotnet_framework_version", null)
       ftps_state                = lookup(var.settings.site_config, "ftps_state", "FtpsOnly")
+      health_check_path         = lookup(var.settings.site_config, "health_check_path", null)
       http2_enabled             = lookup(var.settings.site_config, "http2_enabled", false)
       java_version              = lookup(var.settings.site_config, "java_version", null)
       java_container            = lookup(var.settings.site_config, "java_container", null)
@@ -59,6 +61,7 @@ resource "azurerm_app_service" "app_service" {
       use_32_bit_worker_process = lookup(var.settings.site_config, "use_32_bit_worker_process", false)
       websockets_enabled        = lookup(var.settings.site_config, "websockets_enabled", false)
       scm_type                  = lookup(var.settings.site_config, "scm_type", null)
+      number_of_workers         = can(var.settings.numberOfWorkers) || can(var.settings.site_config.number_of_workers) ? try(var.settings.numberOfWorkers, var.settings.site_config.number_of_workers) : 1
 
       dynamic "cors" {
         for_each = lookup(var.settings.site_config, "cors", {}) != {} ? [1] : []
@@ -69,11 +72,25 @@ resource "azurerm_app_service" "app_service" {
         }
       }
       dynamic "ip_restriction" {
-        for_each = lookup(var.settings.site_config, "ip_restriction", {}) != {} ? [1] : []
+        for_each = try(var.settings.site_config.ip_restriction, {})
 
         content {
-          ip_address                = lookup(var.settings.site_config.ip_restriction, "ip_address", null)
-          virtual_network_subnet_id = lookup(var.settings.site_config.ip_restriction, "virtual_network_subnet_id", null)
+          ip_address                = lookup(ip_restriction.value, "ip_address", null)
+          service_tag               = lookup(ip_restriction.value, "service_tag", null)
+          virtual_network_subnet_id = can(ip_restriction.value.virtual_network_subnet_id) || can(ip_restriction.value.virtual_network_subnet.id) || can(ip_restriction.value.virtual_network_subnet.subnet_key) == false ? try(ip_restriction.value.virtual_network_subnet_id, ip_restriction.value.virtual_network_subnet.id, null) : var.combined_objects.networking[try(ip_restriction.value.virtual_network_subnet.lz_key, var.client_config.landingzone_key)][ip_restriction.value.virtual_network_subnet.vnet_key].subnets[ip_restriction.value.virtual_network_subnet.subnet_key].id
+          name                      = lookup(ip_restriction.value, "name", null)
+          priority                  = lookup(ip_restriction.value, "priority", null)
+          action                    = lookup(ip_restriction.value, "action", null)
+          dynamic "headers" {
+            for_each = try(ip_restriction.headers, {})
+
+            content {
+              x_azure_fdid      = lookup(headers.value, "x_azure_fdid", null)
+              x_fd_health_probe = lookup(headers.value, "x_fd_health_probe", null)
+              x_forwarded_for   = lookup(headers.value, "x_forwarded_for", null)
+              x_forwarded_host  = lookup(headers.value, "x_forwarded_host", null)
+            }
+          }
         }
       }
     }
@@ -109,8 +126,8 @@ resource "azurerm_app_service" "app_service" {
         for_each = lookup(var.settings.auth_settings, "active_directory", {}) != {} ? [1] : []
 
         content {
-          client_id         = var.settings.auth_settings.active_directory.client_id
-          client_secret     = lookup(var.settings.auth_settings.active_directory, "client_secret", null)
+          client_id         = can(var.settings.auth_settings.active_directory.client_id_key) ? var.azuread_applications[try(var.settings.auth_settings.active_directory.client_id_lz_key, var.client_config.landingzone_key)][var.settings.auth_settings.active_directory.client_id_key].application_id : var.settings.auth_settings.active_directory.client_id
+          client_secret     = can(var.settings.auth_settings.active_directory.client_secret_key) ? var.azuread_service_principal_passwords[try(var.settings.auth_settings.active_directory.client_secret_lz_key, var.client_config.landingzone_key)][var.settings.auth_settings.active_directory.client_secret_key].service_principal_password : try(var.settings.auth_settings.active_directory.client_secret, null)
           allowed_audiences = lookup(var.settings.auth_settings.active_directory, "allowed_audiences", null)
         }
       }
@@ -194,16 +211,21 @@ resource "azurerm_app_service" "app_service" {
     for_each = lookup(var.settings, "logs", {}) != {} ? [1] : []
 
     content {
+      detailed_error_messages_enabled = try(var.settings.logs.detailed_error_messages_enabled, null)
+      failed_request_tracing_enabled  = try(var.settings.logs.failed_request_tracing_enabled, null)
+
       dynamic "application_logs" {
         for_each = lookup(var.settings.logs, "application_logs", {}) != {} ? [1] : []
 
         content {
+          file_system_level = try(var.settings.logs.application_logs.file_system_level, null)
+
           dynamic "azure_blob_storage" {
             for_each = lookup(var.settings.logs.application_logs, "azure_blob_storage", {}) != {} ? [1] : []
 
             content {
               level             = var.settings.logs.application_logs.azure_blob_storage.level
-              sas_url           = var.settings.logs.application_logs.azure_blob_storage.sas_url
+              sas_url           = try(var.settings.logs.application_logs.azure_blob_storage.sas_url, local.logs_sas_url)
               retention_in_days = var.settings.logs.application_logs.azure_blob_storage.retention_in_days
             }
           }
@@ -218,7 +240,7 @@ resource "azurerm_app_service" "app_service" {
             for_each = lookup(var.settings.logs.http_logs, "azure_blob_storage", {}) != {} ? [1] : []
 
             content {
-              sas_url           = var.settings.logs.http_logs.azure_blob_storage.sas_url
+              sas_url           = try(var.settings.logs.http_logs.azure_blob_storage.sas_url, local.http_logs_sas_url)
               retention_in_days = var.settings.logs.http_logs.azure_blob_storage.retention_in_days
             }
           }
@@ -255,20 +277,11 @@ resource "azurerm_app_service" "app_service" {
   }
 }
 
-resource "azurerm_template_deployment" "site_config" {
-  depends_on = [azurerm_app_service.app_service]
-
-  count = lookup(var.settings, "numberOfWorkers", {}) != {} ? 1 : 0
-
-  name                = azurecaf_name.app_service.result
+resource "azurerm_app_service_custom_hostname_binding" "app_service" {
+  for_each            = try(var.settings.custom_hostname_binding, {})
+  app_service_name    = azurerm_app_service.app_service.name
   resource_group_name = var.resource_group_name
-
-  template_body = file(local.arm_filename)
-
-  parameters = {
-    "numberOfWorkers" = tonumber(var.settings.numberOfWorkers)
-    "name"            = azurecaf_name.app_service.result
-  }
-
-  deployment_mode = "Incremental"
+  hostname            = each.value.hostname
+  ssl_state           = try(each.value.ssl_state, null)
+  thumbprint          = try(each.value.thumbprint, null)
 }

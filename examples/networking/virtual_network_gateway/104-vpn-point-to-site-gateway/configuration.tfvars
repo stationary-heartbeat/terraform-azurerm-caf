@@ -45,7 +45,7 @@ virtual_network_gateways = {
   gateway1 = {
     name                       = "mygateway"
     resource_group_key         = "vpngw"
-    type                       = "VPN"
+    type                       = "Vpn"
     sku                        = "VpnGw1"
     private_ip_address_enabled = true
     # enable_bpg defaults to false. If set, true, input the necessary parameters as well. VPN Type only
@@ -100,6 +100,23 @@ virtual_network_gateways = {
               M/s/1JRtO3bDSzD9TazRVzn2oBqzSa8VgIo5C1nOnoAKJTlsClJKvIhnRlaLQqk=
               EOF
         }
+
+        # root_certificates = {
+        #   ca = {
+        #     name                  = "ca"
+        #     public_cert_data_file = "~/.certs/caCert64.pem"
+        #   }
+        # }
+      }
+    }
+
+    # Add custom routes for to define what networks are available for a P2S client connection
+    custom_route = {
+      vpn_routes = {
+        address_prefixes = [
+          "10.20.30.0/24",
+          "192.168.162.0/24",
+        ]
       }
     }
   }

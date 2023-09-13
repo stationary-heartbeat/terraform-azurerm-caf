@@ -21,7 +21,7 @@ resource "azurerm_firewall" "fw" {
   sku_name            = try(var.settings.sku_name, "AZFW_VNet")
   sku_tier            = try(var.settings.sku_tier, "Standard")
   tags                = local.tags
-  threat_intel_mode   = try(var.settings.virtual_hub, null) != null ? "" : try(var.settings.threat_intel_mode, "Alert")
+  threat_intel_mode   = try(var.settings.threat_intel_mode, null)
   zones               = try(var.settings.zones, null)
 
   ## direct subnet_id reference
@@ -62,7 +62,7 @@ resource "azurerm_firewall" "fw" {
     content {
       name                 = ip_configuration.value.name
       public_ip_address_id = can(ip_configuration.value.public_ip_id) ? ip_configuration.value.public_ip_id : var.public_ip_addresses[try(ip_configuration.value.lz_key, var.client_config.landingzone_key)][ip_configuration.value.public_ip_key].id
-      subnet_id            = try(ip_configuration.value.subnet_id, null) != null ? ip_configuration.value.subnet_id : (lookup(ip_configuration.value, "lz_key", null) == null ? var.virtual_networks[var.client_config.landingzone_key][ip_configuration.value.vnet_key].subnets[ip_configuration.value.subnet_key].id : var.virtual_networks[ip_configuration.value.lz_key][ip_configuration.value.vnet_key].subnets[ip_configuration.value.subnet_key].id)
+      subnet_id            = try(ip_configuration.value.subnet_id, null) != null ? ip_configuration.value.subnet_id : try(ip_configuration.value.subnet_key, null) != null ? try(ip_configuration.value.lz_key, null) == null ? var.virtual_networks[var.client_config.landingzone_key][ip_configuration.value.vnet_key].subnets[ip_configuration.value.subnet_key].id : var.virtual_networks[ip_configuration.value.lz_key][ip_configuration.value.vnet_key].subnets[ip_configuration.value.subnet_key].id : null
     }
   }
 
@@ -70,7 +70,7 @@ resource "azurerm_firewall" "fw" {
     for_each = try(var.settings.management_ip_configuration, {})
     content {
       name                 = management_ip_configuration.value.name
-      public_ip_address_id = try(management_ip_configuration.value.public_ip_address_id, null) != null ? management_ip_configuration.value.public_ip_address_id : var.public_ip_addresses[management_ip_configuration.value.public_ip_key].id
+      public_ip_address_id = try(management_ip_configuration.value.public_ip_address_id, null) != null ? management_ip_configuration.value.public_ip_address_id : var.public_ip_addresses[try(management_ip_configuration.value.lz_key, var.client_config.landingzone_key)][management_ip_configuration.value.public_ip_key].id
       subnet_id            = try(management_ip_configuration.value.subnet_id, null) != null ? management_ip_configuration.value.subnet_id : (lookup(management_ip_configuration.value, "lz_key", null) == null ? var.virtual_networks[var.client_config.landingzone_key][management_ip_configuration.value.vnet_key].subnets[management_ip_configuration.value.subnet_key].id : var.virtual_networks[management_ip_configuration.value.lz_key][management_ip_configuration.value.vnet_key].subnets[management_ip_configuration.value.subnet_key].id)
     }
   }

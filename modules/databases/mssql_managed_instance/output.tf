@@ -5,7 +5,7 @@ output "name" {
 }
 
 output "id" {
-  value       = lookup(azurerm_template_deployment.mssqlmi.outputs, "id")
+  value       = local.output.id
   description = "SQL MI Id"
 }
 
@@ -14,6 +14,11 @@ output "location" {
 }
 
 output "principal_id" {
-  value       = lookup(azurerm_template_deployment.mssqlmi.outputs, "objectId")
+  value       = local.output.principal_id
   description = "SQL MI Identity Principal Id"
+}
+
+output "resource_group_id" {
+  value       = local.parent_id
+  description = "Resource group resource id of the SQL Server managed instance."
 }

@@ -145,6 +145,11 @@ variable "remote_objects" {
   default     = {}
 }
 
+variable "data_sources" {
+  description = "Data gathering for resources not managed by CAF Module"
+  default     = {}
+}
+
 ## Diagnostics settings
 variable "diagnostics_definition" {
   default     = null
@@ -180,6 +185,11 @@ variable "user_type" {
   default     = {}
 }
 
+## Azure Maps
+variable "maps" {
+  description = "Configuration object - Azure map "
+  default     = {}
+}
 ## Azure AD
 variable "azuread" {
   description = "Configuration object - Azure Active Directory resources"
@@ -226,6 +236,12 @@ variable "database" {
 
 variable "messaging" {
   description = "Configuration object - messaging resources"
+  default     = {}
+}
+
+## DataProtection variables
+variable "data_protection" {
+  description = "Configuration object - data protection"
   default     = {}
 }
 
@@ -300,6 +316,10 @@ variable "shared_services" {
     # monitoring = {}
     # recovery_vaults = {}
   }
+}
+
+variable "var_folder_path" {
+  default = ""
 }
 
 # variable "virtual_network_gateways" {
@@ -387,9 +407,34 @@ variable "identity" {
 variable "apim" {
   default = {}
 }
+
 variable "purview" {
   default = {}
 }
+
 variable "sentinel_watchlists" {
+  default = {}
+}
+variable "iot" {
+  description = "Configuration object - IoT"
+  default = {
+    # digital_twins_instances                 = {}
+    # digital_twins_endpoint_eventhubs                 = {}
+    # digital_twins_endpoint_eventgrids = {}
+    # digital_twins_endpoint_servicebuses = {}
+
+  }
+}
+variable "resource_provider_registration" {
+  default = {}
+}
+variable "aadb2c" {
+  description = "Configuration object - AAD B2C resources"
+  default     = {}
+}
+variable "preview_features" {
+  default = {}
+}
+variable "powerbi_embedded" {
   default = {}
 }
