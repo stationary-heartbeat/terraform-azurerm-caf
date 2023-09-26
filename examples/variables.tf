@@ -888,3 +888,7 @@ variable "sentinel_dc_security_center" {
 variable "sentinel_dc_threat_intelligence" {
   default = {}
 }
+###CLDSVC###
+variable "static_sites" {
+  default = {}
+}
