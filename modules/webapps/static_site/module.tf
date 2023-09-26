@@ -17,13 +17,12 @@ resource "azurerm_static_site" "static_site" {
   sku_size = var.sku_size
   sku_tier = var.sku_tier
 
-####CLDSVC - Current tf version might not support this block - Commented to fix L3 SWA deploy run errors######################
- /* dynamic "identity" {
+  dynamic "identity" {
     for_each = try(var.identity, null) == null ? [] : [1]
 
     content {
       type         = var.identity.type
       identity_ids = lower(var.identity.type) == "userassigned" ? local.managed_identities : null
     }
-  }*/
+  }
 }
