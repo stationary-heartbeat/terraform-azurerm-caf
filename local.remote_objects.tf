@@ -110,6 +110,6 @@ locals {
     wvd_host_pools                                 = try(local.combined_objects_wvd_host_pools, null)
     wvd_workspaces                                 = try(local.combined_objects_wvd_workspaces, null)
     subscriptions                                  = try(local.combined_objects_subscriptions, null)
-#    static_site                                    = try(local.combined_objects_static_site , null)
+    static_sites                                   = try(local.combined_objects_static_sites , null)
   }
 }

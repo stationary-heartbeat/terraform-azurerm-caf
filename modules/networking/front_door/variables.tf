@@ -26,3 +26,6 @@ variable "settings" {}
 variable "tags" {
   default = {}
 }
+variable "static_sites" {
+  default = {}
+}

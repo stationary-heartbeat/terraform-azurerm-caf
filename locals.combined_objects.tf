@@ -119,7 +119,7 @@ locals {
   combined_objects_wvd_application_groups                         = merge(tomap({ (local.client_config.landingzone_key) = module.wvd_application_groups }), try(var.remote_objects.wvd_application_groups, {}))
   combined_objects_wvd_applications                               = merge(tomap({ (local.client_config.landingzone_key) = module.wvd_applications }), try(var.remote_objects.wvd_applications, {}))
   combined_objects_wvd_host_pools                                 = merge(tomap({ (local.client_config.landingzone_key) = module.wvd_host_pools }), try(var.remote_objects.wvd_host_pools, {}))
-  #combined_objects_static_site                                    = merge(tomap({ (local.client_config.landingzone_key) = module.static_sites }), try(var.remote_objects.static_sites, {}))
+  combined_objects_static_sites                                   = merge(tomap({ (local.client_config.landingzone_key) = module.static_sites }), try(var.remote_objects.static_sites, {}))
   combined_objects_wvd_workspaces                                 = merge(tomap({ (local.client_config.landingzone_key) = module.wvd_workspaces }), try(var.remote_objects.wvd_workspaces, {}))
 
   combined_objects_subscriptions = merge(

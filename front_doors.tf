@@ -13,6 +13,7 @@ module "front_doors" {
   keyvault_id                   = try(each.value.keyvault_key, null) == null ? null : try(local.combined_objects_keyvaults[local.client_config.landingzone_key][each.value.keyvault_key].id, local.combined_objects_keyvaults[each.value.lz_key][each.value.keyvault_key].id)
   keyvault_certificate_requests = local.combined_objects_keyvault_certificate_requests
   settings                      = each.value
+  static_sites                  = local.combined_objects_static_sites
 }
 
 output "front_doors" {
