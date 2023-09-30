@@ -27,5 +27,5 @@ variable "tags" {
   default = {}
 }
 variable "static_sites" {
-  default = {}
+  default = null
 }
