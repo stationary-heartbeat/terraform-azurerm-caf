@@ -102,8 +102,8 @@ resource "azurerm_frontdoor" "frontdoor" {
           #########CLDSVC-customized for refering staticwebapp hostname########################          
           #address     = backend.value.address
           #host_header = backend.value.host_header
-          address     = can(backend.value.address) ? backend.value.address : var.static_sites[try(backend.value.lz_key, var.client_config.landingzone_key)][backend.value.key].default_host_name
-          host_header = can(backend.value.host_header) ? backend.value.host_header : var.static_sites[try(backend.value.lz_key, var.client_config.landingzone_key)][backend.value.key].default_host_name
+          address     = can(backend.value.address) ? backend.value.address : var.static_sites[backend.value.lz_key][backend.value.key].default_host_name
+          host_header = can(backend.value.host_header) ? backend.value.host_header : var.static_sites[backend.value.lz_key][backend.value.key].default_host_name
           http_port   = backend.value.http_port
           https_port  = backend.value.https_port
           priority    = backend.value.priority
@@ -121,7 +121,7 @@ resource "azurerm_frontdoor" "frontdoor" {
       host_name                               = try(frontend_endpoint.value.host_name, format("%s.azurefd.net", azurecaf_name.frontdoor.result))
       session_affinity_enabled                = frontend_endpoint.value.session_affinity_enabled
       session_affinity_ttl_seconds            = frontend_endpoint.value.session_affinity_ttl_seconds
-      web_application_firewall_policy_link_id = try(frontend_endpoint.value.front_door_waf_policy.key, null) == null ? null : var.front_door_waf_policies[try(frontend_endpoint.value.front_door_waf_policy.lz_key, var.client_config.landingzone_key)][frontend_endpoint.value.front_door_waf_policy.key].id
+      web_application_firewall_policy_link_id = try(frontend_endpoint.value.front_door_waf_policy.key, null) == null ? null : var.front_door_waf_policies[try(frontend_endpoint.value.front_door_waf_policy.lz_key)][frontend_endpoint.value.front_door_waf_policy.key].id
     }
   }
 }
