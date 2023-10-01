@@ -26,6 +26,6 @@ variable "settings" {}
 variable "tags" {
   default = {}
 }
-variable "static_sites" {
+variable "static_sites_url" {
   default = null
 }

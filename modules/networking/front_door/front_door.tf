@@ -102,8 +102,8 @@ resource "azurerm_frontdoor" "frontdoor" {
           #########CLDSVC-customized for refering staticwebapp hostname########################          
           #address     = backend.value.address
           #host_header = backend.value.host_header
-          address     = coalesce(can(backend.value.address) ? backend.value.address : try(var.static_sites[backend.value.lz_key][backend.value.key].default_host_name, null))
-          host_header = coalesce(can(backend.value.host_header) ? backend.value.host_header : try(var.static_sites[backend.value.lz_key][backend.value.key].default_host_name, null))
+          address     = coalesce(can(backend.value.address) ? backend.value.address : try(var.static_sites_url, null))
+          host_header = coalesce(can(backend.value.host_header) ? backend.value.host_header : try(var.static_sites_url, null))
           http_port   = backend.value.http_port
           https_port  = backend.value.https_port
           priority    = backend.value.priority
