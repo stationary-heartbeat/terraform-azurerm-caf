@@ -102,8 +102,8 @@ resource "azurerm_frontdoor" "frontdoor" {
           #########CLDSVC-customized for refering staticwebapp hostname########################          
           #address     = backend.value.address
           #host_header = backend.value.host_header
-          address     = coalesce (can(backend.value.address) ? backend.value.address : data.terraform_remote_state.remote[backend.value.lz_key].outputs.objects.vaule[backend.value.lz_key].static_sites[backend.value.key]default_host_name
-          host_header = coalesce (can(backend.value.host_header) ? backend.value.host_header : data.terraform_remote_state.remote[backend.value.lz_key].outputs.objects.vaule[backend.value.lz_key].static_sites[backend.value.key]default_host_name
+          address     = coalesce (can(backend.value.address) ? backend.value.address : data.terraform_remote_state.remote[backend.value.lz_key].outputs.objects.vaule[backend.value.lz_key].static_sites[backend.value.key].default_host_name)
+          host_header = can(backend.value.host_header) ? backend.value.host_header : data.terraform_remote_state.remote[backend.value.lz_key].outputs.objects.vaule[backend.value.lz_key].static_sites[backend.value.key].default_host_name
           http_port   = backend.value.http_port
           https_port  = backend.value.https_port
           priority    = backend.value.priority
