@@ -99,11 +99,11 @@ resource "azurerm_frontdoor" "frontdoor" {
         for_each = backend_pool.value.backend
         content {
           enabled     = backend.value.enabled
-          #########CLDSVC-customized for refering staticwebapp hostname########################          
+          ####CLDSVC-v0.1.0-5.5.5-a# - customized for refering staticwebapp hostname in fd backendpool####        
           #address     = backend.value.address
           #host_header = backend.value.host_header
-          address     = coalesce(can(backend.value.address) ? backend.value.address : try(var.static_sites_url, null))
-          host_header = coalesce(can(backend.value.host_header) ? backend.value.host_header : try(var.static_sites_url, null))
+          address     = coalesce(backend.value.address, try(var.static_sites_url[backend.value.lz_key][backend.value.key].default_host_name, null)) #CLDSVC-v0.1.0-5.5.5-a# 
+          host_header = try(var.static_sites_url[backend.value.lz_key][backend.value.key].default_host_name, backend.value.host_header, null) #CLDSVC-v0.1.0-5.5.5-a# 
           http_port   = backend.value.http_port
           https_port  = backend.value.https_port
           priority    = backend.value.priority

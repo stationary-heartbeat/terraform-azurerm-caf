@@ -27,5 +27,5 @@ variable "tags" {
   default = {}
 }
 variable "static_sites_url" {
-  default = null
-}
+ description = "CLDSVC - map containing static web app configurations in remote landingzones" 
+} #CLDSVC-v0.1.0-5.5.5-a# 

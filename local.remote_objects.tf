@@ -91,6 +91,7 @@ locals {
     servicebus_queues                              = try(local.combined_objects_servicebus_queues, null)
     signalr_services                               = try(local.combined_objects_signalr_services, null)
     storage_accounts                               = try(local.combined_objects_storage_accounts, null)
+    static_sites                                   = try(local.combined_objects_static_sites , null) #CLDSVC-v0.1.0-5.5.5-a# 
     storage_containers                             = try(local.combined_objects_storage_containers, null)
     synapse_workspaces                             = try(local.combined_objects_synapse_workspaces, null)
     virtual_hub_connections                        = try(local.combined_objects_virtual_hub_connections, null)
@@ -110,6 +111,5 @@ locals {
     wvd_host_pools                                 = try(local.combined_objects_wvd_host_pools, null)
     wvd_workspaces                                 = try(local.combined_objects_wvd_workspaces, null)
     subscriptions                                  = try(local.combined_objects_subscriptions, null)
-    static_sites                                   = try(local.combined_objects_static_sites , null)
   }
 }
