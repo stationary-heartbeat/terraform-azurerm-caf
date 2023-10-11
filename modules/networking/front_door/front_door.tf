@@ -121,7 +121,7 @@ resource "azurerm_frontdoor" "frontdoor" {
       host_name                               = try(frontend_endpoint.value.host_name, format("%s.azurefd.net", azurecaf_name.frontdoor.result))
       session_affinity_enabled                = frontend_endpoint.value.session_affinity_enabled
       session_affinity_ttl_seconds            = frontend_endpoint.value.session_affinity_ttl_seconds
-      web_application_firewall_policy_link_id = try(frontend_endpoint.value.front_door_waf_policy.key, null) == null ? null : var.front_door_waf_policies[try(frontend_endpoint.value.front_door_waf_policy.lz_key)][frontend_endpoint.value.front_door_waf_policy.key].id
+      web_application_firewall_policy_link_id = try(frontend_endpoint.value.front_door_waf_policy.key, null) == null ? null : var.front_door_waf_policies[try(frontend_endpoint.value.front_door_waf_policy.lz_key, var.client_config.landingzone_key)][frontend_endpoint.value.front_door_waf_policy.key].id
     }
   }
 }
