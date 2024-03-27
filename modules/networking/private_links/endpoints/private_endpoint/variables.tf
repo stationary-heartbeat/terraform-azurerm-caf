@@ -29,3 +29,4 @@ variable "subresource_names" {}
 variable "private_dns" {
   default = {}
 }
+variable "private_connection_resource_id" {}

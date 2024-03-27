@@ -25,6 +25,7 @@ module "private_endpoints" {
     diagnostic_event_hub_namespaces = local.combined_diagnostics.event_hub_namespaces
 
     aks_clusters               = local.combined_objects_aks_clusters
+    application_gateway_platforms = local.combined_objects_application_gateway_platforms
     azure_container_registries = local.combined_objects_azure_container_registries
     cosmos_dbs                 = local.combined_objects_cosmos_dbs
     data_factory               = local.combined_objects_data_factory
