@@ -59,3 +59,6 @@ variable "application_gateway_waf_policies" {
 variable "keyvaults" {
   default = {}
 }
+variable "resource_groups" {
+  default = {}
+}
