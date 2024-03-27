@@ -37,4 +37,7 @@ variable "client_config" {
 variable "private_dns" {
   default = {}
 }
+variable "tags" {
+  default = {}
+}
 #variable "private_connection_resource_id" {}
