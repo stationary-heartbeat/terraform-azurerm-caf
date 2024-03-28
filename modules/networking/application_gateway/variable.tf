@@ -80,4 +80,6 @@ variable "resource_groups" {
   default = {}
 }
 
-variable "private_endpoints" {}
+variable "private_endpoints" {
+  default = {}
+}
