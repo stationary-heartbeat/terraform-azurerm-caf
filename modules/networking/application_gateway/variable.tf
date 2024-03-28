@@ -79,3 +79,5 @@ variable "application_gateway_waf_policies" {
 variable "resource_groups" {
   default = {}
 }
+
+variable "private_endpoints" {}
