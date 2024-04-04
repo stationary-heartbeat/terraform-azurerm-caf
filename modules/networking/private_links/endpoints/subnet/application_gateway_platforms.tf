@@ -11,7 +11,6 @@ module "application_gateway_platforms" {
   name                = try(each.value.name, each.key)
   private_dns         = var.private_dns
   resource_group_name = can(each.value.resource_group_key) ? var.resource_groups[try(each.value.lz_key, var.client_config.landingzone_key)][each.value.resource_group_key].name : var.vnet_resource_group_name
-  #resource_id         = try(each.value.private_service_connection.private_connection_resource_id, can(each.value.resource_id) ? each.value.resource_id : var.remote_objects.application_gateway_platforms[var.client_config.landingzone_key][try(each.value.key, each.key)].id)
   resource_id         = can(each.value.resource_id) ? each.value.resource_id : var.remote_objects.application_gateway_platforms[var.client_config.landingzone_key][try(each.value.key, each.key)].id
   settings            = each.value
   subnet_id           = var.subnet_id
@@ -30,7 +29,6 @@ module "application_gateway_platforms_remote" {
   name                = try(each.value.name, each.key)
   private_dns         = var.private_dns
   resource_group_name = can(each.value.resource_group_key) ? var.resource_groups[try(each.value.lz_key, var.client_config.landingzone_key)][each.value.resource_group_key].name : var.vnet_resource_group_name
-  #resource_id         = try(each.value.private_service_connection.private_connection_resource_id, can(each.value.key) ? var.remote_objects.application_gateway_platforms[each.value.lz_key][each.value.key].id : var.remote_objects.application_gateway_platforms[each.value.lz_key][each.key].id)
   resource_id         = can(each.value.key) ? var.remote_objects.application_gateway_platforms[each.value.lz_key][each.value.key].id : var.remote_objects.application_gateway_platforms[each.value.lz_key][each.key].id
   settings            = each.value
   subnet_id           = var.subnet_id

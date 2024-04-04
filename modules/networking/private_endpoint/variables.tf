@@ -40,4 +40,3 @@ variable "private_dns" {
 variable "tags" {
   default = {}
 }
-#variable "private_connection_resource_id" {}

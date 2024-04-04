@@ -112,7 +112,7 @@ resource "azurerm_application_gateway" "agw" {
         content {
           name   			   				        = ip_configuration.value.name
           subnet_id            				  = ip_configuration.value.subnet_id
-          private_ip_address_allocation = try(ip_configuration.value.private_ip_address_allocation, Dynamic)
+          private_ip_address_allocation = try(ip_configuration.value.private_ip_address_allocation, null)
           primary					              = try(ip_configuration.value.primary, false)
           private_ip_address			      = try(ip_configuration.value.private_ip_address, null)
         }
