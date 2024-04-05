@@ -1,4 +1,4 @@
-module "application_gateway_platforms" {
+/*module "application_gateway_platforms" {
   source = "../private_endpoint"
   for_each = {
     for key, value in try(var.private_endpoints.application_gateway_platforms, {}) : key => value
@@ -33,4 +33,4 @@ module "application_gateway_platforms_remote" {
   settings            = each.value
   subnet_id           = var.subnet_id
   subresource_names   = toset(try(each.value.private_service_connection.subresource_names, ["appGwPrivateFrontendIpIPv4"]))
-}
+}*/
