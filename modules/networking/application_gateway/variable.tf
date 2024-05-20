@@ -75,3 +75,11 @@ variable "keyvaults" {
 variable "application_gateway_waf_policies" {
   default = {}
 }
+
+variable "resource_groups" {
+  default = {}
+}
+
+variable "private_endpoints" {
+  default = {}
+}

@@ -84,6 +84,26 @@ resource "azurerm_application_gateway" "agw" {
       private_ip_address            = try(frontend_ip_configuration.value.public_ip_key, null) == null ? local.private_ip_address : null
       private_ip_address_allocation = try(frontend_ip_configuration.value.private_ip_address_allocation, null)
       subnet_id                     = local.ip_configuration[frontend_ip_configuration.key].subnet_id
+      private_link_configuration_name = try(frontend_ip_configuration.value.private_link_configuration_name, null) # CLDSVC - agw_pvt_lnk
+    }
+  }
+
+  #CLDSVC - agw_pvt_lnk   
+  dynamic "private_link_configuration" {
+    for_each = try(var.settings.private_link_configurations, {})
+    content {
+      name                             = private_link_configuration.value.name
+
+      dynamic "ip_configuration" {
+        for_each = try(private_link_configuration.value.ip_configuration, null) == null ? [] : [private_link_configuration.value.ip_configuration]
+        content {
+          name   			   				        = ip_configuration.value.name
+          subnet_id            				  = ip_configuration.value.subnet_id
+          private_ip_address_allocation = try(ip_configuration.value.private_ip_address_allocation, null)
+          primary					              = try(ip_configuration.value.primary, false)
+          private_ip_address			      = try(ip_configuration.value.private_ip_address, null)
+        }
+      }
     }
   }
 
