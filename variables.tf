@@ -307,6 +307,10 @@ variable "shared_services" {
   }
 }
 
+variable "var_folder_path" {
+  default = ""
+}
+
 # variable "virtual_network_gateways" {
 #   default = {}
 # }
