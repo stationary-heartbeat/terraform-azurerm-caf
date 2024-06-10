@@ -63,7 +63,9 @@ variable "managed_identities" {
   default = {}
 }
 
-variable "var_folder_path" {}
+variable "var_folder_path" {
+  default = {}
+}
 
 variable "virtual_subnets" {
   description = "Map of virtual_subnets objects"
