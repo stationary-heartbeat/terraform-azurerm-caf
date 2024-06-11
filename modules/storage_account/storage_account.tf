@@ -32,7 +32,7 @@ resource "azurerm_storage_account" "stg" {
   is_hns_enabled           = try(var.storage_account.is_hns_enabled, false)
   nfsv3_enabled            = try(var.storage_account.nfsv3_enabled, false)
   large_file_share_enabled = try(var.storage_account.large_file_share_enabled, null)
-  tags                     = merge(var.base_tags, local.tags)
+  tags                     = merge(local.tags, try(var.storage_account.tags, null), local.caf_tags)
 
 
   dynamic "custom_domain" {
