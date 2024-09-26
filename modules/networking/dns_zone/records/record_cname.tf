@@ -8,7 +8,9 @@ resource "azurerm_dns_cname_record" "cname" {
   zone_name           = var.zone_name
   resource_group_name = var.resource_group_name
   ttl                 = try(each.value.ttl, 300)
-  record              = try(each.value.record, null)
+
+  #record              = try(each.value.record, null)
+  record              = try(var.static_sites_url[each.value.lz_key][each.value.key].default_host_name, each.value.record, null) ##CLDSVC-v2024.09.18.9-5.5.5#
   tags                = merge(var.base_tags, try(each.value.tags, {}))
 }
 

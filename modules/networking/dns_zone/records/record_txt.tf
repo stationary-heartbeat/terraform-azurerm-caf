@@ -12,6 +12,7 @@ resource "azurerm_dns_txt_record" "txt" {
 
     content {
       value = record.value.value
+      #value = try(var.static_sites_url[record.value.lz_key][record.value.key].custom_domain.txt_domain.validation_token, record.value.value) #CLDSVC-v2024.09.18.9-5.5.5#
     }
   }
 }

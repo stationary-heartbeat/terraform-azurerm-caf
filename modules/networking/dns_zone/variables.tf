@@ -14,3 +14,6 @@ variable "base_tags" {
 variable "resource_ids" {
   default = {}
 }
+variable "static_sites_url" {
+  default = {}
+}#CLDSVC-v2024.09.18.9-5.5.5#
