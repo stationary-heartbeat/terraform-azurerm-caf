@@ -7,97 +7,58 @@ resource "azurerm_api_management_api_operation" "apim" {
   method              = var.settings.method
   url_template        = var.settings.url_template
   description         = try(var.settings.description, null)
-
   dynamic "request" {
     for_each = try(var.settings.request, null) != null ? [var.settings.request] : []
     content {
       description = try(request.value.description, null)
       dynamic "header" {
-        for_each = try(request.value.headers, {})
+        for_each = try(var.settings.header, null) != null ? [var.settings.header] : []
         content {
-          name          = header.value.name
-          required      = header.value.required
-          type          = header.value.type
+          name          = try(header.value.name, null)
+          required      = try(header.value.required, null)
+          type          = try(header.value.type, null)
           description   = try(header.value.description, null)
           default_value = try(header.value.default_value, null)
           values        = try(header.value.values, null)
-          schema_id     = try(header.value.schema_id, null)
-          type_name     = try(header.value.type_name, null)
-
-          dynamic "example" {
-            for_each = try(header.value.examples, {})
-            content {
-              name           = example.value.name
-              summary        = try(example.value.summary, null)
-              description    = try(example.value.description, null)
-              value          = try(example.value.value, null)
-              external_value = try(example.value.external_value, null)
-            }
-          }
         }
       }
       dynamic "query_parameter" {
-        for_each = try(request.value.query_parameters, {})
+        for_each = try(var.settings.query_parameter, null) != null ? [var.settings.query_parameter] : []
         content {
-          name          = query_parameter.value.name
-          required      = query_parameter.value.required
-          type          = query_parameter.value.type
+          name          = try(query_parameter.value.name, null)
+          required      = try(query_parameter.value.required, null)
+          type          = try(query_parameter.value.type, null)
           description   = try(query_parameter.value.description, null)
           default_value = try(query_parameter.value.default_value, null)
           values        = try(query_parameter.value.values, null)
-          schema_id     = try(query_parameter.value.schema_id, null)
-          type_name     = try(query_parameter.value.type_name, null)
-
-          dynamic "example" {
-            for_each = try(query_parameter.value.examples, {})
-            content {
-              name           = example.value.name
-              summary        = try(example.value.summary, null)
-              description    = try(example.value.description, null)
-              value          = try(example.value.value, null)
-              external_value = try(example.value.external_value, null)
-            }
-          }
         }
       }
       dynamic "representation" {
-        for_each = try(request.value.representations, {})
+        for_each = try(var.settings.representation, null) != null ? [var.settings.representation] : []
         content {
-          content_type = representation.value.content_type
+          content_type = try(representation.value.content_type, null)
           dynamic "form_parameter" {
-            for_each = try(representation.value.form_parameters, {})
+            for_each = try(var.settings.form_parameter, null) != null ? [var.settings.form_parameter] : []
             content {
-              name          = form_parameter.value.name
-              required      = form_parameter.value.required
-              type          = form_parameter.value.type
+              name          = try(form_parameter.value.name, null)
+              required      = try(form_parameter.value.required, null)
+              type          = try(form_parameter.value.type, null)
               description   = try(form_parameter.value.description, null)
               default_value = try(form_parameter.value.default_value, null)
               values        = try(form_parameter.value.values, null)
-              schema_id     = try(form_parameter.value.schema_id, null)
-              type_name     = try(form_parameter.value.type_name, null)
-
-              dynamic "example" {
-                for_each = try(form_parameter.value.examples, {})
-                content {
-                  name           = example.value.name
-                  summary        = try(example.value.summary, null)
-                  description    = try(example.value.description, null)
-                  value          = try(example.value.value, null)
-                  external_value = try(example.value.external_value, null)
-                }
-              }
             }
           }
-          dynamic "example" {
-            for_each = try(representation.value.examples, {})
-            content {
-              name           = try(example.value.name, null)
-              summary        = try(example.value.summary, null)
-              description    = try(example.value.description, null)
-              value          = try(example.value.value, null)
-              external_value = try(example.value.external_value, null)
-            }
-          }
+          # dynamic "example" {
+          #   for_each = try(var.settings.example, null) != null ? [var.settings.example] : []
+          #   content {
+          #     name           = try(example.value.name, null)
+          #     summary        = try(example.value.summary, null)
+          #     description    = try(example.value.description, null)
+          #     value          = try(example.value.value, null)
+          #     external_value = try(example.value.external_value, null)
+          #   }
+          # }
+          sample    = try(representation.value.sample, null)
           schema_id = try(representation.value.schema_id, null)
           type_name = try(representation.value.type_name, null)
         }
@@ -105,72 +66,47 @@ resource "azurerm_api_management_api_operation" "apim" {
     }
   }
   dynamic "response" {
-    for_each = try(var.settings.responses, {})
+    for_each = try(var.settings.response, null) != null ? [var.settings.response] : []
     content {
-      status_code = response.value.status_code
+      status_code = try(response.value.status_code, null)
       description = try(response.value.description, null)
       dynamic "header" {
-        for_each = try(response.value.headers, {})
+        for_each = try(var.settings.header, null) != null ? [var.settings.header] : []
         content {
-          name          = header.value.name
-          required      = header.value.required
-          type          = header.value.type
+          name          = try(header.value.name, null)
+          required      = try(header.value.required, null)
+          type          = try(header.value.type, null)
           description   = try(header.value.description, null)
           default_value = try(header.value.default_value, null)
           values        = try(header.value.values, null)
-          schema_id     = try(header.value.schema_id, null)
-          type_name     = try(header.value.type_name, null)
-
-          dynamic "example" {
-            for_each = try(header.value.examples, {})
-            content {
-              name           = example.value.name
-              summary        = try(example.value.summary, null)
-              description    = try(example.value.description, null)
-              value          = try(example.value.value, null)
-              external_value = try(example.value.external_value, null)
-            }
-          }
         }
       }
       dynamic "representation" {
-        for_each = try(response.value.representations, {})
+        for_each = try(var.settings.representation, null) != null ? [var.settings.representation] : []
         content {
-          content_type = representation.value.content_type
+          content_type = try(representation.value.content_type, null)
           dynamic "form_parameter" {
-            for_each = try(representation.value.form_parameters, {})
+            for_each = try(var.settings.form_parameter, null) != null ? [var.settings.form_parameter] : []
             content {
-              name          = form_parameter.value.name
-              required      = form_parameter.value.required
-              type          = form_parameter.value.type
+              name          = try(form_parameter.value.name, null)
+              required      = try(form_parameter.value.required, null)
+              type          = try(form_parameter.value.type, null)
               description   = try(form_parameter.value.description, null)
               default_value = try(form_parameter.value.default_value, null)
               values        = try(form_parameter.value.values, null)
-              schema_id     = try(form_parameter.value.schema_id, null)
-              type_name     = try(form_parameter.value.type_name, null)
-
-              dynamic "example" {
-                for_each = try(form_parameter.value.examples, {})
-                content {
-                  name           = example.value.name
-                  summary        = try(example.value.summary, null)
-                  description    = try(example.value.description, null)
-                  value          = try(example.value.value, null)
-                  external_value = try(example.value.external_value, null)
-                }
-              }
             }
           }
-          dynamic "example" {
-            for_each = try(representation.value.examples, {})
-            content {
-              name           = try(example.value.name, null)
-              summary        = try(example.value.summary, null)
-              description    = try(example.value.description, null)
-              value          = try(example.value.value, null)
-              external_value = try(example.value.external_value, null)
-            }
-          }
+          # dynamic "example" {
+          #   for_each = try(var.settings.example, null) != null ? [var.settings.example] : []
+          #   content {
+          #     name           = try(example.value.name, null)
+          #     summary        = try(example.value.summary, null)
+          #     description    = try(example.value.description, null)
+          #     value          = try(example.value.value, null)
+          #     external_value = try(example.value.external_value, null)
+          #   }
+          # }
+          sample    = try(representation.value.sample, null)
           schema_id = try(representation.value.schema_id, null)
           type_name = try(representation.value.type_name, null)
         }
@@ -178,35 +114,14 @@ resource "azurerm_api_management_api_operation" "apim" {
     }
   }
   dynamic "template_parameter" {
-    for_each = try(var.settings.template_parameters, {})
+    for_each = try(var.settings.template_parameter, null) != null ? [var.settings.template_parameter] : []
     content {
-      name          = template_parameter.value.name
-      required      = template_parameter.value.required
-      type          = template_parameter.value.type
+      name          = try(template_parameter.value.name, null)
+      required      = try(template_parameter.value.required, null)
+      type          = try(template_parameter.value.type, null)
       description   = try(template_parameter.value.description, null)
       default_value = try(template_parameter.value.default_value, null)
       values        = try(template_parameter.value.values, null)
-      schema_id     = try(template_parameter.value.schema_id, null)
-      type_name     = try(template_parameter.value.type_name, null)
-
-      dynamic "example" {
-        for_each = try(template_parameter.value.examples, {})
-        content {
-          name           = example.value.name
-          summary        = try(example.value.summary, null)
-          description    = try(example.value.description, null)
-          value          = try(example.value.value, null)
-          external_value = try(example.value.external_value, null)
-        }
-      }
     }
   }
-
-  lifecycle {
-    precondition {
-      condition     = contains(["GET", "DELETE", "PUT", "POST"], var.settings.method)
-      error_message = format("Enter a valid value for method: GET, DELETE, PUT, POST. Got: %s", var.settings.method)
-    }
-  }
-
 }
