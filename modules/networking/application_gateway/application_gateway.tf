@@ -286,7 +286,9 @@ resource "azurerm_application_gateway" "agw" {
 
     content {
       name                = ssl_certificate.value.name
-      key_vault_secret_id = ssl_certificate.value.secret_id
+      ###CLDSVC Customization to remove cert version on PVTCON AGW listeners
+      #key_vault_secret_id = ssl_certificate.value.secret_id
+      key_vault_secret_id = trimsuffix(ssl_certificate.value.secret_id,"${ssl_certificate.value.version}")
     }
   }
 
