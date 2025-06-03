@@ -11,16 +11,30 @@ locals {
   module_tag = {
     "module" = basename(abspath(path.module))
   }
-  tags = merge(var.base_tags, local.module_tag, var.tags)
+  tags = var.base_tags ? merge(
+    var.global_settings.tags,
+    try(var.resource_group.tags, null),
+    local.module_tag,
+    try(var.settings.tags, null)
+    ) : merge(
+    local.module_tag,
+    try(var.settings.tags,
+    null)
+  )
+
+  location            = coalesce(var.location, var.resource_group.location)
+  resource_group_name = coalesce(var.resource_group_name, var.resource_group.name)
 
   arm_filename = "${path.module}/arm_site_config.json"
 
-  app_settings = merge(try(var.app_settings, {}), try(local.dynamic_settings_to_process, {}), var.application_insight == null ? {} :
-    {
+  app_settings = merge(
+    var.application_insight == null ? {} : {
       "APPINSIGHTS_INSTRUMENTATIONKEY"             = var.application_insight.instrumentation_key,
       "APPLICATIONINSIGHTS_CONNECTION_STRING"      = var.application_insight.connection_string,
       "ApplicationInsightsAgent_EXTENSION_VERSION" = "~2"
-    }
+    },
+    try(var.app_settings, {}),
+    try(local.dynamic_settings_to_process, {})
   )
 
   backup_storage_account = can(var.settings.backup) ? var.storage_accounts[try(var.settings.backup.lz_key, var.client_config.landingzone_key)][var.settings.backup.storage_account_key] : null

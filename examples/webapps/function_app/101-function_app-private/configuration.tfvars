@@ -3,6 +3,10 @@ global_settings = {
   regions = {
     region1 = "australiaeast"
   }
+  inherit_tags = true
+  tags = {
+    env = "to_be_set"
+  }
 }
 
 resource_groups = {
@@ -21,10 +25,15 @@ app_service_plans = {
   asp1 = {
     resource_group_key = "funapp"
     name               = "asp-simple"
+    kind               = "linux"
+    reserved           = true
 
     sku = {
       tier = "Standard"
       size = "S1"
+    }
+    tags = {
+      project = "Mobile"
     }
   }
 }
@@ -43,6 +52,10 @@ function_apps = {
       subnet_key = "app"
       #subnet_id = "/subscriptions/97958dac-xxxx-xxxx-xxxx-9f436fa73bd4/resourceGroups/jana-rg-spoke/providers/Microsoft.Network/virtualNetworks/jana-vnet-spoke/subnets/jana-snet-app"
       enabled = true
+    }
+    tags = {
+      application = "payment"
+      env         = "uat"
     }
   }
 }

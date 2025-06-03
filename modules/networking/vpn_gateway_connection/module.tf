@@ -30,6 +30,18 @@ resource "azurerm_vpn_gateway_connection" "vpn_gateway_connection" {
       shared_key                            = try(vpn_link.value.shared_key, null)
       local_azure_ip_address_enabled        = try(vpn_link.value.local_azure_ip_address_enabled, null)
       policy_based_traffic_selector_enabled = try(vpn_link.value.policy_based_traffic_selector_enabled, null)
+      egress_nat_rule_ids = try(compact(
+        [
+          for key, value in vpn_link.value.egress_nat_rules :
+          can(value.id) ? value.id : var.nat_rules[try(value.lz_key, var.client_config.landingzone_key)][value.key].id
+        ]
+      ), [])
+      ingress_nat_rule_ids = try(compact(
+        [
+          for key, value in vpn_link.value.ingress_nat_rules :
+          can(value.id) ? value.id : var.nat_rules[try(value.lz_key, var.client_config.landingzone_key)][value.key].id
+        ]
+      ), [])
 
       vpn_site_link_id = coalesce(
         try(var.vpn_sites[try(var.settings.vpn_site.lz_key, var.client_config.landingzone_key)][var.settings.vpn_site.key].vpn_site.link[vpn_link.value.link_index].id, null),
@@ -53,19 +65,29 @@ resource "azurerm_vpn_gateway_connection" "vpn_gateway_connection" {
   }
 
   dynamic "routing" {
-    for_each = lookup(var.settings, "routing", null) == null ? [] : [1]
+    for_each = can(var.settings.routing) ? [var.settings.routing] : []
     content {
-      associated_route_table = coalesce(
-        try(var.route_tables[try(var.settings.routing.associated_route_table.lz_key, var.client_config.landingzone_key)][var.settings.routing.associated_route_table.key].id, null),
-        try(var.settings.routing.associated_route_table.id, null)
-      )
+      associated_route_table = can(routing.value.associated_route_table.key) ? var.route_tables[try(routing.value.associated_route_table.lz_key, var.client_config.landingzone_key)][routing.value.associated_route_table.key].id : try(routing.value.associated_route_table.id, try(var.default_route_table_id, null))
 
-      propagated_route_tables = [
-        for key, value in var.settings.routing.propagated_route_tables : coalesce(
-          try(var.route_tables[try(value.lz_key, var.client_config.landingzone_key)][value.key].id, null),
-          try(value.id, null)
-        )
-      ]
+      dynamic "propagated_route_table" {
+        # propagated_route_tables kept to smooth the migration to azurerm 3.0
+        for_each = can(routing.value.propagated_route_table) ? [routing.value.propagated_route_table] : []
+        content {
+          route_table_ids = compact(
+            [
+              for key, value in propagated_route_table.value.route_tables :
+              can(value.id) ? value.id : var.route_tables[try(value.lz_key, var.client_config.landingzone_key)][value.key].id
+            ]
+          )
+
+          labels = flatten(
+            [
+              for key, value in propagated_route_table.value.route_tables :
+              can(value.labels) ? value.labels : []
+            ]
+          )
+        }
+      }
     }
   }
 }

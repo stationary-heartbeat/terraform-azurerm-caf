@@ -16,6 +16,7 @@ output "backup_policies" {
   value = {
     virtual_machines = azurerm_backup_policy_vm.vm
     file_shares      = azurerm_backup_policy_file_share.fs
+    vm_workloads     = azurerm_backup_policy_vm_workload.vm_workload
   }
 }
 
@@ -26,7 +27,7 @@ output "replication_policies" {
 
 output "resource_group_name" {
   description = "Output the resource group name"
-  value       = var.resource_group_name
+  value       = local.resource_group_name
 }
 
 output "soft_delete_enabled" {

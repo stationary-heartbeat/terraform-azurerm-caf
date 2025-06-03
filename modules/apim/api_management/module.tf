@@ -11,11 +11,14 @@ resource "azurecaf_name" "apim" {
 resource "azurerm_api_management" "apim" {
   name = azurecaf_name.apim.result
 
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  location            = local.location
+  resource_group_name = local.resource_group_name
   publisher_name      = var.settings.publisher_name
   publisher_email     = var.settings.publisher_email
   sku_name            = var.settings.sku_name
+
+  public_ip_address_id = can(var.settings.public_ip_address_id) ? var.settings.public_ip_address_id : can(var.settings.public_ip_address.key) ? var.public_ip_addresses[try(var.settings.public_ip_address.lz_key, var.client_config.landingzone_key)][var.settings.public_ip_address.key].id : null
+
   dynamic "additional_location" {
     for_each = try(var.settings.additional_location, null) != null ? [var.settings.additional_location] : []
 
@@ -159,8 +162,7 @@ resource "azurerm_api_management" "apim" {
       tls_rsa_with_aes128_gcm_sha256_ciphers_enabled      = try(security.value.tls_rsa_with_aes128_gcm_sha256_ciphers_enabled, null)
       tls_rsa_with_aes256_cbc_sha256_ciphers_enabled      = try(security.value.tls_rsa_with_aes256_cbc_sha256_ciphers_enabled, null)
       tls_rsa_with_aes256_cbc_sha_ciphers_enabled         = try(security.value.tls_rsa_with_aes256_cbc_sha_ciphers_enabled, null)
-      enable_triple_des_ciphers                           = try(security.value.enable_triple_des_ciphers, null)
-      triple_des_ciphers_enabled                          = try(security.value.triple_des_ciphers_enabled, null)
+      triple_des_ciphers_enabled                          = try(security.value.triple_des_ciphers_enabled, security.value.enable_triple_des_ciphers, null)
       # disable_backend_ssl30                               = try(security.value.disable_backend_ssl30, null)
       # disable_backend_tls10                               = try(security.value.disable_backend_tls10, null)
       # disable_backend_tls11                               = try(security.value.disable_backend_tls11, null)
@@ -213,6 +215,6 @@ resource "azurerm_api_management" "apim" {
 
     }
   }
-  tags = local.tags
+  tags = merge(local.tags, try(var.settings.tags, {}))
 
 }

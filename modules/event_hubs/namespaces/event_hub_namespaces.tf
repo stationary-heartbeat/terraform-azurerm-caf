@@ -11,7 +11,7 @@ resource "azurecaf_name" "evh" {
 resource "azurerm_eventhub_namespace" "evh" {
   name                     = azurecaf_name.evh.result
   location                 = local.location
-  resource_group_name      = var.resource_group.name
+  resource_group_name      = local.resource_group_name
   sku                      = var.settings.sku
   capacity                 = try(var.settings.capacity, null)
   tags                     = local.tags
@@ -34,7 +34,7 @@ resource "azurerm_eventhub_namespace" "evh" {
       trusted_service_access_enabled = try(network_rulesets.value.trusted_service_access_enabled, null)
 
       dynamic "virtual_network_rule" {
-        for_each = try(var.settings.network_rulesets.virtual_network_rule, {})
+        for_each = try(network_rulesets.value.virtual_network_rule, {})
         content {
           subnet_id                                       = virtual_network_rule.value.subnet_id
           ignore_missing_virtual_network_service_endpoint = try(virtual_network_rule.value.ignore_missing_virtual_network_service_endpoint, null)
@@ -42,7 +42,7 @@ resource "azurerm_eventhub_namespace" "evh" {
       }
 
       dynamic "ip_rule" {
-        for_each = try(var.settings.network_rulesets.ip_rule, {})
+        for_each = try(network_rulesets.value.ip_rule, {})
         content {
           ip_mask = ip_rule.value.ip_mask
           action  = try(ip_rule.value.action, null)

@@ -11,14 +11,13 @@ resource "azurecaf_name" "lb" {
 }
 resource "azurerm_lb_rule" "lb" {
   name                           = azurecaf_name.lb.result
-  resource_group_name            = var.resource_group_name
-  loadbalancer_id                = can(var.settings.loadbalancer.id) ? var.settings.loadbalancer.id : var.remote_objects.lb[try(var.settings.loadbalancer.lz_key, var.client_config.landingzone_key)][var.settings.loadbalancer.key].id
+  loadbalancer_id                = can(var.settings.loadbalancer.id) || can(var.settings.loadbalancer.key) ? try(var.settings.loadbalancer.id, var.remote_objects.lb[try(var.settings.loadbalancer.lz_key, var.client_config.landingzone_key)][var.settings.loadbalancer.key].id) : null
   frontend_ip_configuration_name = var.settings.frontend_ip_configuration_name
   protocol                       = var.settings.protocol
   frontend_port                  = var.settings.frontend_port
   backend_port                   = var.settings.backend_port
-  backend_address_pool_ids       = try(var.settings.backend_address_pool_ids, null)
-  probe_id                       = try(var.settings.probe_id, null)
+  backend_address_pool_ids       = var.backend_address_pool_ids
+  probe_id                       = var.probe_id
   enable_floating_ip             = try(var.settings.enable_floating_ip, null)
   idle_timeout_in_minutes        = try(var.settings.idle_timeout_in_minutes, null)
   load_distribution              = try(var.settings.load_distribution, null)

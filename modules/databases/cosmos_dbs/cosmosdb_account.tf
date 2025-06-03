@@ -11,19 +11,21 @@ resource "azurecaf_name" "cdb" {
 ## Cosmos DB account
 resource "azurerm_cosmosdb_account" "cosmos_account" {
   name                = azurecaf_name.cdb.result
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  location            = local.location
+  resource_group_name = local.resource_group_name
   offer_type          = var.settings.offer_type
   kind                = try(var.settings.kind, "GlobalDocumentDB")
   tags                = local.tags
 
-  enable_free_tier                  = try(var.settings.enable_free_tier, false)
-  ip_range_filter                   = try(var.settings.ip_range_filter, null)
-  enable_multiple_write_locations   = try(var.settings.enable_multiple_write_locations, false)
-  enable_automatic_failover         = try(var.settings.enable_automatic_failover, null)
-  is_virtual_network_filter_enabled = try(var.settings.is_virtual_network_filter_enabled, null)
-  create_mode                       = try(var.settings.create_mode, null)
-  public_network_access_enabled     = try(var.settings.public_network_access_enabled, true)
+  enable_free_tier                   = try(var.settings.enable_free_tier, false)
+  ip_range_filter                    = try(var.settings.ip_range_filter, null)
+  enable_multiple_write_locations    = try(var.settings.enable_multiple_write_locations, false)
+  enable_automatic_failover          = try(var.settings.enable_automatic_failover, null)
+  is_virtual_network_filter_enabled  = try(var.settings.is_virtual_network_filter_enabled, null)
+  create_mode                        = try(var.settings.create_mode, null)
+  public_network_access_enabled      = try(var.settings.public_network_access_enabled, true)
+  access_key_metadata_writes_enabled = try(var.settings.access_key_metadata_writes_enabled, null)
+  local_authentication_disabled      = try(var.settings.local_authentication_disabled, null)
 
   dynamic "consistency_policy" {
     for_each = lookup(var.settings, "consistency_policy", {}) == {} ? [] : [1]
@@ -54,6 +56,19 @@ resource "azurerm_cosmosdb_account" "cosmos_account" {
       name = capabilities.value
     }
   }
+
+  dynamic "backup" {
+    for_each = try(var.settings.backup, null) != null ? [var.settings.backup] : []
+
+    content {
+      type                = backup.value.type
+      tier                = try(backup.value.tier, null)
+      interval_in_minutes = try(backup.value.interval_in_minutes, null)
+      retention_in_hours  = try(backup.value.retention_in_hours, null)
+      storage_redundancy  = try(backup.value.storage_redundancy, null)
+    }
+  }
+
   dynamic "restore" {
     for_each = try(var.settings.restore, null) != null ? [var.settings.restore] : []
     content {
@@ -69,5 +84,3 @@ resource "azurerm_cosmosdb_account" "cosmos_account" {
     }
   }
 }
-
-

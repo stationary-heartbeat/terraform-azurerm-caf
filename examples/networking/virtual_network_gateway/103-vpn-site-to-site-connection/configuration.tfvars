@@ -45,7 +45,7 @@ virtual_network_gateways = {
   gateway1 = {
     name                       = "mygateway"
     resource_group_key         = "vpngw"
-    type                       = "VPN"
+    type                       = "Vpn"
     sku                        = "VpnGw1"
     private_ip_address_enabled = true
     # enable_bpg defaults to false. If set, true, input the necessary parameters as well. VPN Type only
@@ -78,7 +78,7 @@ virtual_network_gateway_connections = {
   connection1 = {
     name                        = "connection"
     resource_group_key          = "vpngw"
-    type                        = "IPSec"
+    type                        = "IPsec"
     region                      = "region1"
     virtual_network_gateway_key = "gateway1"
     local_network_gateway_key   = "local1"

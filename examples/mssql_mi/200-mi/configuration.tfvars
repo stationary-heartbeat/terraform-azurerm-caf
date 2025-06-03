@@ -21,7 +21,7 @@ vnets = {
     resource_group_key = "networking_region1"
     vnet = {
       name          = "sqlmi-rg1"
-      address_space = ["172.25.88.0/21"]
+      address_space = ["172.25.88.0/21", "10.2.0.0/24"]
     }
     subnets = {
       sqlmi1 = {
@@ -38,6 +38,12 @@ vnets = {
             "Microsoft.Network/virtualNetworks/subnets/unprepareNetworkPolicies/action"
           ]
         }
+      }
+      subnet02 = {
+        name            = "subnet02"
+        cidr            = ["10.2.0.0/24"]
+        nsg_key         = "subnet02"
+        route_table_key = "sqlmi1"
       }
     }
   }
@@ -59,7 +65,7 @@ mssql_managed_instances = {
     }
     administratorLogin = "adminuser"
     # administratorLoginPassword = "@dm1nu53r@30102020"
-    # if password not set, a random complex passwor will be created and stored in the keyvault
+    # if password not set, a random complex password will be created and stored in the keyvault
     # the secret value can be changed after the deployment if needed
 
     //networking
@@ -70,7 +76,20 @@ mssql_managed_instances = {
     keyvault_key = "sqlmi_rg1"
 
     storageSizeInGB = 32
-    vCores          = 4
+    vCores          = 8
+    private_endpoints = {
+      privatelink-sqlmi = {
+        name               = "pe-sqlmi1"
+        vnet_key           = "sqlmi_region1"
+        subnet_key         = "subnet02"
+        resource_group_key = "sqlmi_region1"
+        private_service_connection = {
+          name                 = "conn-sqlmi1"
+          is_manual_connection = false
+          subresource_names    = ["managedInstance"]
+        }
+      }
+    }
   }
 }
 
@@ -79,6 +98,24 @@ mssql_managed_databases = {
     resource_group_key = "sqlmi_region1"
     name               = "lz-sql-managed-db1"
     mi_server_key      = "sqlmi1"
+  }
+  managed_db2 = {
+    resource_group_key = "sqlmi_region1"
+    name               = "lz-sql-managed-db2"
+    mi_server_key      = "sqlmi1"
+  }
+}
+
+mssql_managed_databases_backup_ltr = {
+  sqlmi1 = {
+    resource_group_key = "sqlmi_region1"
+    mi_server_key      = "sqlmi1"
+    database_key       = "managed_db1"
+
+    weeklyRetention  = "P12W"
+    monthlyRetention = "P12M"
+    yearlyRetention  = "P5Y"
+    weekOfYear       = 16
   }
 }
 
@@ -113,14 +150,17 @@ azuread_groups = {
   }
 }
 
+## specify azuread_groups key OR you can import existing azuread group by using group OID as shown below
+
 mssql_mi_administrators = {
   sqlmi1 = {
     resource_group_key = "sqlmi_region1"
     mi_server_key      = "sqlmi1"
     login              = "sqlmiadmin-khairi"
-    azuread_group_key  = "sql_mi_admins"
 
-    # group key or upn supported
+    # group key or existing group OID or upn supported
+    azuread_group_key = "sql_mi_admins"
+    # azuread_group_id   = "<specify existing azuread group's Object Id (OID) here>"
     # user_principal_name = ""
   }
 }

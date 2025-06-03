@@ -1,7 +1,7 @@
 
 #
 # SSH keys to be stored in KV only if public_key_pem_file is not set
-# Keyvault has to be in the same subscription as the VM when local.create_sshkeys is true 
+# Keyvault has to be in the same subscription as the VM when local.create_sshkeys is true
 #
 
 locals {
@@ -12,13 +12,13 @@ locals {
 resource "azurerm_key_vault_secret" "ssh_private_key" {
   for_each = local.create_sshkeys ? var.settings.virtual_machine_settings : {}
 
-  name         = try(format("%s-ssh-private-key", azurecaf_name.linux_computer_name[each.key].result), format("%s-ssh-private-key", azurecaf_name.legacy_computer_name[each.key].result))
+  name         = can(azurecaf_name.legacy_computer_name[each.key].result) ? format("%s-ssh-private-key", azurecaf_name.legacy_computer_name[each.key].result) : format("%s-ssh-private-key", data.azurecaf_name.linux_computer_name[each.key].result)
   value        = tls_private_key.ssh[each.key].private_key_pem
   key_vault_id = local.keyvault.id
 
   lifecycle {
     ignore_changes = [
-      value, key_vault_id
+      name, value, key_vault_id
     ]
   }
 }
@@ -26,13 +26,13 @@ resource "azurerm_key_vault_secret" "ssh_private_key" {
 resource "azurerm_key_vault_secret" "ssh_public_key_openssh" {
   for_each = local.create_sshkeys ? var.settings.virtual_machine_settings : {}
 
-  name         = try(format("%s-ssh-public-key-openssh", azurecaf_name.linux_computer_name[each.key].result), format("%s-ssh-public-key-openssh", azurecaf_name.legacy_computer_name[each.key].result))
+  name         = can(azurecaf_name.legacy_computer_name[each.key].result) ? format("%s-ssh-public-key-openssh", azurecaf_name.legacy_computer_name[each.key].result) : format("%s-ssh-public-key-openssh", data.azurecaf_name.linux_computer_name[each.key].result)
   value        = tls_private_key.ssh[each.key].public_key_openssh
   key_vault_id = local.keyvault.id
 
   lifecycle {
     ignore_changes = [
-      value, key_vault_id
+      name, value, key_vault_id
     ]
   }
 }

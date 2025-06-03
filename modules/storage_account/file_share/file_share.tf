@@ -9,12 +9,12 @@ resource "azurerm_storage_share" "fs" {
   enabled_protocol     = try(var.settings.enabled_protocol, null)
 
   dynamic "acl" {
-    for_each = try(var.settings.acl, {})
+    for_each = try(var.settings.acl, null) != null ? [var.settings.acl] : []
     content {
       id = acl.value.id
 
       dynamic "access_policy" {
-        for_each = try(var.settings.access_policy, {})
+        for_each = try(acl.value.access_policy, null) != null ? [acl.value.access_policy] : []
         content {
           permissions = access_policy.value.permissions
           start       = try(access_policy.value.start, null)
@@ -25,9 +25,17 @@ resource "azurerm_storage_share" "fs" {
   }
 }
 
-# Issue open in 2.61 : https://github.com/terraform-providers/terraform-provider-azurerm/issues/11184
+resource "azurerm_backup_container_storage_account" "container" {
+  count = try(var.settings.storage_account.enable_azurerm_backup_container_storage_account, false) ? 1 : 0
+
+  resource_group_name = try(var.recovery_vault.resource_group_name, var.resource_group_name)
+  recovery_vault_name = var.recovery_vault.name
+  storage_account_id  = var.storage_account_id
+}
+
 resource "azurerm_backup_protected_file_share" "fs_backup" {
-  for_each = try(var.settings.backups, null) != null ? toset(["enabled"]) : toset([])
+  for_each   = try(var.settings.backups, null) != null ? toset(["enabled"]) : toset([])
+  depends_on = [azurerm_backup_container_storage_account.container]
 
   resource_group_name       = try(var.recovery_vault.resource_group_name, var.resource_group_name)
   recovery_vault_name       = var.recovery_vault.name

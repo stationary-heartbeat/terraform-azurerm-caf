@@ -13,16 +13,16 @@ keyvault_access_policies = {
   stg_byok = {
     stg = {
       storage_account_key = "sa1"
-      key_permissions     = ["get", "create", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
+      key_permissions     = ["Get", "Create", "List", "Restore", "Recover", "UnwrapKey", "WrapKey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"]
       secret_permissions  = ["Set", "Get", "List", "Delete", "Purge", "Recover"]
     }
     diastg = {
       diagnostic_storage_account_key = "dsa1"
-      key_permissions                = ["get", "create", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
+      key_permissions                = ["Get", "Create", "List", "Restore", "Recover", "UnwrapKey", "WrapKey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"]
       secret_permissions             = ["Set", "Get", "List", "Delete", "Purge", "Recover"]
     }
     logged_in_user = {
-      key_permissions    = ["get", "create", "delete", "list", "restore", "recover", "unwrapkey", "wrapkey", "purge", "encrypt", "decrypt", "sign", "verify"]
+      key_permissions    = ["Get", "Create", "Delete", "List", "Restore", "Recover", "UnwrapKey", "WrapKey", "Purge", "Encrypt", "Decrypt", "Sign", "Verify"]
       secret_permissions = ["Set", "Get", "List", "Delete", "Purge", "Recover"]
     }
   }

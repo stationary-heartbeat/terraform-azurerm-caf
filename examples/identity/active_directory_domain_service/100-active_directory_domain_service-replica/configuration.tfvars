@@ -4,6 +4,10 @@ global_settings = {
     region1 = "australiacentral"
     region2 = "westeurope"
   }
+  inherit_tags = true
+  tags = {
+    base = "basetags"
+  }
 }
 
 resource_groups = {
@@ -33,9 +37,10 @@ active_directory_domain_service = {
     resource_group = {
       key = "rg"
     }
-    domain_name           = "widgetslogin.net"
-    sku                   = "Enterprise"
-    filtered_sync_enabled = false
+    domain_name               = "widgetslogin.net"
+    sku                       = "Enterprise"
+    filtered_sync_enabled     = false
+    domain_configuration_type = "FullySynced"
 
     initial_replica_set = {
       region = "region1"

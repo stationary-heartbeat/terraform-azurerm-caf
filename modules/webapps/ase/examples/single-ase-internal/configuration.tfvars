@@ -186,7 +186,7 @@ network_security_group_definition = {
         priority                   = "180"
         direction                  = "Inbound"
         access                     = "Allow"
-        protocol                   = "tcp"
+        protocol                   = "Tcp"
         source_port_range          = "*"
         destination_port_range     = "1433"
         source_address_prefix      = "*"
@@ -313,11 +313,11 @@ diagnostics_definition = {
     categories = {
       log = [
         # ["Category name",  "Diagnostics Enabled(true/false)", "Retention Enabled(true/false)", Retention_period]
-        ["VMProtectionAlerts", true, false, 7],
+        ["VMProtectionAlerts", true, false, 0],
       ]
       metric = [
         #["Category name",  "Diagnostics Enabled(true/false)", "Retention Enabled(true/false)", Retention_period]
-        ["AllMetrics", true, false, 7],
+        ["AllMetrics", true, false, 0],
       ]
     }
 

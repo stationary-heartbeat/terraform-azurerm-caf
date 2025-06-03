@@ -15,7 +15,7 @@ output "name" {
 
 output "firewall_id" {
   description = "Resource ID of the Azure Firewall for Virtual Hub"
-  value       = try(var.virtual_hub_config.deploy_firewall, false) ? azurerm_template_deployment.arm_template_vhub_firewall.*.outputs.resourceID : null
+  value       = try(var.virtual_hub_config.deploy_firewall, false) ? jsondecode(azurerm_resource_group_template_deployment.arm_template_vhub_firewall.0.output_content).resourceID : null
 }
 
 # output virtual network gateway objects: p2s, s2s, er objects
@@ -37,4 +37,9 @@ output "p2s_gateway" {
 output "resource_group_name" {
   description = "Name of the resource group where the resources are deployed."
   value       = var.resource_group_name
+}
+
+output "default_route_table_id" {
+  description = "Resource ID of the Virtual Hub Default Route Table"
+  value       = azurerm_virtual_hub.vwan_hub.default_route_table_id
 }

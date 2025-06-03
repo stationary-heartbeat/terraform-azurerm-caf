@@ -74,11 +74,24 @@ diagnostics_definition = {
     categories = {
       log = [
         #["Category name",  "Diagnostics Enabled(true/false)", "Retention Enabled(true/false)", Retention_period]
-        ["Errors", true, false, 7],
+        ["AutomaticTuning", true, false, 0],
+        ["Blocks", true, false, 0],
+        ["DatabaseWaitStatistics", true, false, 0],
+        ["Deadlocks", true, false, 0],
+        ["DevOpsOperationsAudit", true, false, 0],
+        ["QueryStoreRuntimeStatistics", true, false, 0],
+        ["QueryStoreWaitStatistics", true, false, 0],
+        ["SQLInsights", true, false, 0],
+        ["SQLSecurityAuditEvents", true, false, 0],
+        ["Timeouts", true, false, 0],
+        ["Errors", true, false, 0],
+
       ]
       metric = [
         #["Category name",  "Diagnostics Enabled(true/false)", "Retention Enabled(true/false)", Retention_period]
-        ["Basic", true, false, 7],
+        ["Basic", true, false, 0],
+        ["InstanceAndAppAdvanced", true, false, 0],
+        ["WorkloadManagement", true, false, 0],
       ]
     }
   }
