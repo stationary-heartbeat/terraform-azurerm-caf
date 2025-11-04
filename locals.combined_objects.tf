@@ -1,7 +1,7 @@
 locals {
   # CAF landing zones can retrieve remote objects from a different landing zone and the
-  # combined_objects will merge it with the local objects
-  combined_objects_aks_clusters                                   = merge(tomap({ (local.client_config.landingzone_key) = module.aks_clusters }), try(var.remote_objects.aks_clusters, {}))
+  # combined_objects will merge it with the local objects ### - CLDSVC commented for fixing azuread provider issue - ###
+###  combined_objects_aks_clusters                                   = merge(tomap({ (local.client_config.landingzone_key) = module.aks_clusters }), try(var.remote_objects.aks_clusters, {}))
   combined_objects_api_management                                 = merge(tomap({ (local.client_config.landingzone_key) = module.api_management }), try(var.remote_objects.api_management, {}))
   combined_objects_api_management_api                             = merge(tomap({ (local.client_config.landingzone_key) = module.api_management_api }), try(var.remote_objects.api_management_api, {}))
   combined_objects_api_management_api_operation                   = merge(tomap({ (local.client_config.landingzone_key) = module.api_management_api_operation }), try(var.remote_objects.api_management_api_operation, {}))
@@ -20,17 +20,17 @@ locals {
   combined_objects_azure_container_registries                     = merge(tomap({ (local.client_config.landingzone_key) = module.container_registry }), try(var.remote_objects.container_registry, {}))
   combined_objects_cosmos_dbs                                     = merge(tomap({ (local.client_config.landingzone_key) = module.cosmos_dbs }), try(var.remote_objects.cosmos_dbs, {}))
   combined_objects_cosmosdb_sql_databases                         = merge(tomap({ (local.client_config.landingzone_key) = module.cosmosdb_sql_databases }), try(var.remote_objects.cosmosdb_sql_databases, {}))
-  combined_objects_azuread_applications                           = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_applications_v1 }), try(var.remote_objects.azuread_applications, {}))
-  combined_objects_azuread_apps                                   = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_applications }), try(var.remote_objects.azuread_apps, {}))
-  combined_objects_azuread_groups                                 = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_groups }), try(var.remote_objects.azuread_groups, {}))
-  combined_objects_azuread_service_principals                     = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_service_principals }), try(var.remote_objects.azuread_service_principals, {}))
+###  combined_objects_azuread_applications                           = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_applications_v1 }), try(var.remote_objects.azuread_applications, {}))
+###  combined_objects_azuread_apps                                   = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_applications }), try(var.remote_objects.azuread_apps, {}))
+###  combined_objects_azuread_groups                                 = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_groups }), try(var.remote_objects.azuread_groups, {}))
+###  combined_objects_azuread_service_principals                     = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_service_principals }), try(var.remote_objects.azuread_service_principals, {}))
   combined_objects_azuread_users                                  = merge(tomap({ (local.client_config.landingzone_key) = module.azuread_users }), try(var.remote_objects.azuread_users, {}))
   combined_objects_azurerm_firewall_policies                      = merge(tomap({ (local.client_config.landingzone_key) = module.azurerm_firewall_policies }), try(var.remote_objects.azurerm_firewall_policies, {}), try(var.data_sources.azurerm_firewall_policies, {}))
   combined_objects_azurerm_firewalls                              = merge(tomap({ (local.client_config.landingzone_key) = module.azurerm_firewalls }), try(var.remote_objects.azurerm_firewalls, {}), try(var.data_sources.azurerm_firewalls, {}))
   combined_objects_cdn_profile                                    = merge(tomap({ (local.client_config.landingzone_key) = module.cdn_profile }), try(var.remote_objects.cdn_profile, {}))
   combined_objects_cognitive_services_accounts                    = merge(tomap({ (local.client_config.landingzone_key) = module.cognitive_services_account }), try(var.remote_objects.cognitive_services_account, {}))
-  combined_objects_consumption_budgets_resource_groups            = merge(tomap({ (local.client_config.landingzone_key) = module.consumption_budgets_resource_groups }), try(var.remote_objects.consumption_budgets_resource_groups, {}))
-  combined_objects_consumption_budgets_subscriptions              = merge(tomap({ (local.client_config.landingzone_key) = module.consumption_budgets_subscriptions }), try(var.remote_objects.consumption_budgets_subscriptions, {}))
+###  combined_objects_consumption_budgets_resource_groups            = merge(tomap({ (local.client_config.landingzone_key) = module.consumption_budgets_resource_groups }), try(var.remote_objects.consumption_budgets_resource_groups, {}))
+###  combined_objects_consumption_budgets_subscriptions              = merge(tomap({ (local.client_config.landingzone_key) = module.consumption_budgets_subscriptions }), try(var.remote_objects.consumption_budgets_subscriptions, {}))
   combined_objects_container_registry                             = merge(tomap({ (local.client_config.landingzone_key) = module.container_registry }), try(var.remote_objects.container_registry, {}))
   combined_objects_databricks_workspaces                          = merge(tomap({ (local.client_config.landingzone_key) = module.databricks_workspaces }), try(var.remote_objects.databricks_workspaces, {}))
   combined_objects_data_factory                                   = merge(tomap({ (local.client_config.landingzone_key) = module.data_factory }), try(var.remote_objects.data_factory, {}))
@@ -57,14 +57,14 @@ locals {
   combined_objects_express_route_circuits                         = merge(tomap({ (local.client_config.landingzone_key) = module.express_route_circuits }), try(var.remote_objects.express_route_circuits, {}))
   combined_objects_front_door                                     = merge(tomap({ (local.client_config.landingzone_key) = module.front_doors }), try(var.remote_objects.front_doors, {}))
   combined_objects_front_door_waf_policies                        = merge(tomap({ (local.client_config.landingzone_key) = module.front_door_waf_policies }), try(var.remote_objects.front_door_waf_policies, {}))
-  combined_objects_image_definitions                              = merge(tomap({ (local.client_config.landingzone_key) = module.image_definitions }), try(var.remote_objects.image_definitions, {}))
+###  combined_objects_image_definitions                              = merge(tomap({ (local.client_config.landingzone_key) = module.image_definitions }), try(var.remote_objects.image_definitions, {}))
   combined_objects_integration_service_environment                = merge(tomap({ (local.client_config.landingzone_key) = module.integration_service_environment }), try(var.remote_objects.integration_service_environment, {}))
   combined_objects_keyvault_certificates                          = merge(tomap({ (local.client_config.landingzone_key) = module.keyvault_certificates }), try(var.remote_objects.keyvault_certificates, {}), try(var.data_sources.keyvault_certificates, {}))
   combined_objects_keyvault_certificate_requests                  = merge(tomap({ (local.client_config.landingzone_key) = module.keyvault_certificate_requests }), try(var.remote_objects.keyvault_certificate_requests, {}))
   combined_objects_keyvault_keys                                  = merge(tomap({ (local.client_config.landingzone_key) = merge(module.keyvault_keys, try(var.data_sources.keyvault_keys, {})) }), try(var.remote_objects.keyvault_keys, {}), try(var.data_sources.keyvault_keys, {}))
   combined_objects_keyvaults                                      = merge(tomap({ (local.client_config.landingzone_key) = merge(module.keyvaults, try(var.data_sources.keyvaults, {})) }), try(var.remote_objects.keyvaults, {}))
   combined_objects_kusto_clusters                                 = merge(tomap({ (local.client_config.landingzone_key) = module.kusto_clusters }), try(var.remote_objects.kusto_clusters, {}))
-  combined_objects_kusto_databases                                = merge(tomap({ (local.client_config.landingzone_key) = module.kusto_databases }), try(var.remote_objects.kusto_databases, {}))
+###  combined_objects_kusto_databases                                = merge(tomap({ (local.client_config.landingzone_key) = module.kusto_databases }), try(var.remote_objects.kusto_databases, {}))
   combined_objects_lb                                             = merge(tomap({ (local.client_config.landingzone_key) = module.lb }), try(var.remote_objects.lb, {}))
   combined_objects_lb_backend_address_pool                        = merge(tomap({ (local.client_config.landingzone_key) = module.lb_backend_address_pool }), try(var.remote_objects.lb_backend_address_pool, {}))
   combined_objects_load_balancers                                 = merge(tomap({ (local.client_config.landingzone_key) = module.load_balancers }), try(var.remote_objects.load_balancers, {}))
@@ -75,19 +75,19 @@ locals {
   combined_objects_managed_identities                             = merge(tomap({ (local.client_config.landingzone_key) = module.managed_identities }), try(var.remote_objects.managed_identities, {}), try(var.data_sources.managed_identities, {}))
   combined_objects_monitor_action_groups                          = merge(tomap({ (local.client_config.landingzone_key) = module.monitor_action_groups }), try(var.remote_objects.monitor_action_groups, {}))
   combined_objects_mssql_databases                                = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_databases }), try(var.remote_objects.mssql_databases, {}))
-  combined_objects_mssql_elastic_pools                            = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_elastic_pools }), try(var.remote_objects.mssql_elastic_pools, {}))
-  combined_objects_mssql_managed_databases                        = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_managed_databases }), try(var.remote_objects.mssql_managed_databases, {}))
-  combined_objects_mssql_managed_instances                        = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_managed_instances }), try(var.remote_objects.mssql_managed_instances, {}))
-  combined_objects_mssql_managed_instances_secondary              = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_managed_instances_secondary }), try(var.remote_objects.mssql_managed_instances_secondary, {}))
-  combined_objects_mssql_servers                                  = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_servers }), try(var.remote_objects.mssql_servers, {}))
-  combined_objects_mysql_servers                                  = merge(tomap({ (local.client_config.landingzone_key) = module.mysql_servers }), try(var.remote_objects.mysql_servers, {}))
+###  combined_objects_mssql_elastic_pools                            = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_elastic_pools }), try(var.remote_objects.mssql_elastic_pools, {}))
+###  combined_objects_mssql_managed_databases                        = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_managed_databases }), try(var.remote_objects.mssql_managed_databases, {}))
+###  combined_objects_mssql_managed_instances                        = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_managed_instances }), try(var.remote_objects.mssql_managed_instances, {}))
+###  combined_objects_mssql_managed_instances_secondary              = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_managed_instances_secondary }), try(var.remote_objects.mssql_managed_instances_secondary, {}))
+###  combined_objects_mssql_servers                                  = merge(tomap({ (local.client_config.landingzone_key) = module.mssql_servers }), try(var.remote_objects.mssql_servers, {}))
+###  combined_objects_mysql_servers                                  = merge(tomap({ (local.client_config.landingzone_key) = module.mysql_servers }), try(var.remote_objects.mysql_servers, {}))
   combined_objects_nat_gateways                                   = merge(tomap({ (local.client_config.landingzone_key) = module.nat_gateways }), try(var.remote_objects.nat_gateways, {}))
   combined_objects_network_profiles                               = merge(tomap({ (local.client_config.landingzone_key) = module.network_profiles }), try(var.remote_objects.network_profiles, {}))
   combined_objects_network_security_groups                        = merge(tomap({ (local.client_config.landingzone_key) = module.network_security_groups }), try(var.remote_objects.network_security_groups, {}), try(var.data_sources.network_security_groups, {}))
   combined_objects_network_watchers                               = merge(tomap({ (local.client_config.landingzone_key) = module.network_watchers }), try(var.remote_objects.network_watchers, {}))
   combined_objects_networking                                     = merge(tomap({ (local.client_config.landingzone_key) = merge(module.networking, try(var.data_sources.vnets, {})) }), try(var.remote_objects.vnets, {}))
   combined_objects_postgresql_flexible_servers                    = merge(tomap({ (local.client_config.landingzone_key) = module.postgresql_flexible_servers }), try(var.remote_objects.postgresql_flexible_servers, {}))
-  combined_objects_postgresql_servers                             = merge(tomap({ (local.client_config.landingzone_key) = module.postgresql_servers }), try(var.remote_objects.postgresql_servers, {}))
+###  combined_objects_postgresql_servers                             = merge(tomap({ (local.client_config.landingzone_key) = module.postgresql_servers }), try(var.remote_objects.postgresql_servers, {}))
   combined_objects_private_dns                                    = merge(tomap({ (local.client_config.landingzone_key) = module.private_dns }), try(var.remote_objects.private_dns, {}), try(var.data_sources.private_dns, {}))
   combined_objects_private_endpoints                              = merge(tomap({ (local.client_config.landingzone_key) = module.private_endpoints }), try(var.remote_objects.private_endpoints, {}))
   combined_objects_purview_accounts                               = merge(tomap({ (local.client_config.landingzone_key) = module.purview_accounts }), try(var.remote_objects.purview_accounts, {}))
@@ -122,7 +122,7 @@ locals {
   combined_objects_wvd_host_pools                                 = merge(tomap({ (local.client_config.landingzone_key) = module.wvd_host_pools }), try(var.remote_objects.wvd_host_pools, {}))
   combined_objects_wvd_workspaces                                 = merge(tomap({ (local.client_config.landingzone_key) = module.wvd_workspaces }), try(var.remote_objects.wvd_workspaces, {}))
 
-  combined_objects_subscriptions = merge(
+/*  combined_objects_subscriptions = merge(
     tomap(
       {
         (local.client_config.landingzone_key) = merge(
@@ -133,6 +133,6 @@ locals {
       }
     ),
     try(var.remote_objects.subscriptions, {})
-  )
+  )*/
 
 }

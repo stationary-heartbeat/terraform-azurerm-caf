@@ -13,8 +13,8 @@ locals {
     azuread_apps                        = try(var.azuread.azuread_apps, {})
     azuread_credential_policies         = try(var.azuread.azuread_credential_policies, {})
     azuread_credentials                 = try(var.azuread.azuread_credentials, {})
-    azuread_groups                      = try(var.azuread.azuread_groups, {})
-    azuread_groups_membership           = try(var.azuread.azuread_groups_membership, {})
+###    azuread_groups                      = try(var.azuread.azuread_groups, {})
+###    azuread_groups_membership           = try(var.azuread.azuread_groups_membership, {})
     azuread_roles                       = try(var.azuread.azuread_roles, {})
     azuread_service_principal_passwords = try(var.azuread.azuread_service_principal_passwords, {})
     azuread_service_principals          = try(var.azuread.azuread_service_principals, {})
@@ -171,8 +171,8 @@ locals {
     keyvaults                   = local.combined_objects_keyvaults
     machine_learning_workspaces = local.combined_objects_machine_learning
     managed_identities          = local.combined_objects_managed_identities
-    mssql_databases             = local.combined_objects_mssql_databases
-    mssql_servers               = local.combined_objects_mssql_servers
+###    mssql_databases             = local.combined_objects_mssql_databases
+###    mssql_servers               = local.combined_objects_mssql_servers
     storage_accounts            = local.combined_objects_storage_accounts
   }
 

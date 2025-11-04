@@ -9,7 +9,7 @@ module "custom_roles" {
 
 #
 # Roles assignments
-#
+### - CLDSVC commented for fixing azuread provider issue - ###
 # Require the modules output an rbac_id that is set to the principal_id
 #
 
@@ -48,7 +48,7 @@ data "azurerm_management_group" "level" {
 
 locals {
 
-  aks_ingress_application_gateway_identities = tomap(
+/*###  aks_ingress_application_gateway_identities = tomap(
     {
       (var.current_landingzone_key) = {
         for key, value in try(module.aks_clusters, {}) :
@@ -57,7 +57,7 @@ locals {
         } if can(value.addon_profile[0].ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id)
       }
     }
-  )
+  )###*/
 
   management_groups = tomap(
     {

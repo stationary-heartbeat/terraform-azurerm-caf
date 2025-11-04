@@ -24,7 +24,7 @@ module "private_endpoints" {
     diagnostic_storage_accounts     = local.combined_diagnostics.storage_accounts
     diagnostic_event_hub_namespaces = local.combined_diagnostics.event_hub_namespaces
 
-    aks_clusters               = local.combined_objects_aks_clusters
+###    aks_clusters               = local.combined_objects_aks_clusters
     application_gateway_platforms = local.combined_objects_application_gateway_platforms
     azure_container_registries = local.combined_objects_azure_container_registries
     cosmos_dbs                 = local.combined_objects_cosmos_dbs
@@ -32,10 +32,10 @@ module "private_endpoints" {
     event_hub_namespaces       = local.combined_objects_event_hub_namespaces
     keyvaults                  = local.combined_objects_keyvaults
     machine_learning           = local.combined_objects_machine_learning
-    mssql_servers              = local.combined_objects_mssql_servers
-    mysql_servers              = local.combined_objects_mysql_servers
+###    mssql_servers              = local.combined_objects_mssql_servers
+###    mysql_servers              = local.combined_objects_mysql_servers
     networking                 = local.combined_objects_networking
-    postgresql_servers         = local.combined_objects_postgresql_servers
+###    postgresql_servers         = local.combined_objects_postgresql_servers
     recovery_vaults            = local.combined_objects_recovery_vaults
     redis_caches               = local.combined_objects_redis_caches
     storage_accounts           = local.combined_objects_storage_accounts
