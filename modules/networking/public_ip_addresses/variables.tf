@@ -77,13 +77,23 @@ variable "tags" {
 }
 
 variable "zones" {
-  description = "(Optional) The availability zone to allocate the Public IP in. Possible values are Zone-Redundant, 1, 2, 3, and No-Zone. Defaults to Zone-Redundant."
-  type        = string
-  default     = "Zone-Redundant"
+  description = "(Optional) The availability zones to allocate the Public IP in. Possible values are 1, 2, 3. Defaults to null."
+  type        = list(any)
+  default     = null
 
   validation {
-    condition     = contains(["Zone-Redundant", "No-Zone", "1", "2", "3"], var.zones)
-    error_message = "Provide an allowed value as defined in https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip#availability_zone."
+    condition     = var.zones == null ? true : alltrue([for z in var.zones : contains(["1", "2", "3"], tostring(z))])
+    error_message = "Provide allowed values for zones as defined in https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip#zones."
+  }
+}
+
+variable "availability_zone" {
+  description = "(Optional) Backward-compatible single availability zone selector. Supported values are 1, 2, 3, Zone-Redundant, No-Zone."
+  type        = string
+  default     = null
+  validation {
+    condition     = var.availability_zone == null ? true : contains(["1", "2", "3", "Zone-Redundant", "No-Zone"], var.availability_zone)
+    error_message = "Provide an allowed value as defined in https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip#zones."
   }
 }
 
