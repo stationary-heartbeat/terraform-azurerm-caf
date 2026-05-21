@@ -131,9 +131,9 @@ module "public_ip_addresses" {
   tags                       = try(each.value.tags, null)
   ip_tags                    = try(each.value.ip_tags, null)
   public_ip_prefix_id        = try(each.value.public_ip_prefix_id, null)
-  zones = coalesce(
+  zones = try(each.value.zones, null)
+  availability_zone = coalesce(
     try(each.value.availability_zone, ""),
-    try(tostring(each.value.zones[0]), ""),
     try(each.value.sku, "Basic") == "Basic" ? "No-Zone" : "Zone-Redundant"
   )
   diagnostic_profiles = try(each.value.diagnostic_profiles, {})
